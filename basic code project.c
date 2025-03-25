@@ -206,6 +206,7 @@ void simulateScheduler()
             }
             break;
         }
+
         case 3:
         {
             // View queue
