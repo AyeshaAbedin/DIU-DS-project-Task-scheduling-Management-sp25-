@@ -3,7 +3,7 @@
 #include <string.h>
 #include <time.h>
 
-// Task structure
+
 typedef struct
 {
     int id;
