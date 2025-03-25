@@ -245,7 +245,7 @@ void simulateScheduler()
             clearScreen();
             printf("Invalid choice! Try again.\n");
             sleep(1);
-            break;
+            break ;
         }
         }
     }
