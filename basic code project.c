@@ -6,6 +6,8 @@
 
 typedef struct
 {
+
+
     int id;
     char description[100];
     int priority;       // Higher number = higher priority
