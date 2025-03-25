@@ -46,7 +46,7 @@ int main()
 // Initialize the priority queue
 void initializeQueue(PriorityQueue* q)
 {
-    q->front = NULL;
+     q->front = NULL;
     q->size = 0;
 }
 
