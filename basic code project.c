@@ -211,7 +211,7 @@ void simulateScheduler()
 
         case 3:
         {
-            // View queue
+            // View
             displayQueue(&taskQueue);
             break;
         }
