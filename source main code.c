@@ -357,7 +357,7 @@ void simulateScheduler(ProcessedTasksList* processedTasks) {
             case 5: {
                 freeQueue(&taskQueue);
                 printf("Exiting program. Goodbye!\n");
-                return;
+                 return;
             }
         }
     }
