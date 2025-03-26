@@ -352,7 +352,7 @@ void simulateScheduler(ProcessedTasksList* processedTasks) {
                 generateReport(processedTasks);
                 printf("\nPress Enter to continue...");
                 getchar();
-                break;
+                 break;
             }
             case 5: {
                 freeQueue(&taskQueue);
