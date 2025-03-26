@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h> // For sleep()
 
-
+// Task structure
 typedef struct
 {
-
-
     int id;
     char description[100];
     int priority;       // Higher number = higher priority
@@ -23,7 +22,7 @@ typedef struct Node
     struct Node* next;
 } Node;
 
-// Priority Queue structure
+// Priority Queue structureee
 typedef struct
 {
     Node* front;
@@ -38,6 +37,8 @@ Task dequeue(PriorityQueue* q);
 void displayQueue(PriorityQueue* q);
 void generateReport(PriorityQueue* q, int totalTasks);
 void simulateScheduler();
+void clearScreen();
+void showMenu();
 
 int main()
 {
@@ -45,10 +46,31 @@ int main()
     return 0;
 }
 
+// Clear screen function
+void clearScreen()
+{
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+// Show menu function
+void showMenu()
+{
+    printf("\nMenu:\n");
+    printf("1. Add new task\n");
+    printf("2. Process next task\n");
+    printf("3. View current queue\n");
+    printf("4. Generate report and exit\n");
+    printf("Enter choice: ");
+}
+
 // Initialize the priority queue
 void initializeQueue(PriorityQueue* q)
 {
-     q->front = NULL;
+    q->front = NULL;
     q->size = 0;
 }
 
@@ -104,6 +126,7 @@ Task dequeue(PriorityQueue* q)
 // Display all tasks in the queue
 void displayQueue(PriorityQueue* q)
 {
+    clearScreen();
     if (isEmpty(q))
     {
         printf("Queue is empty!\n");
@@ -119,12 +142,12 @@ void displayQueue(PriorityQueue* q)
         printf("%d\t%d\t\t%s\n", current->task.id, current->task.priority, current->task.description);
         current = current->next;
     }
-    printf("\n");
 }
 
 // Generate final report
 void generateReport(PriorityQueue* q, int totalTasks)
 {
+    clearScreen();
     if (totalTasks == 0)
     {
         printf("No tasks were processed.\n");
@@ -133,10 +156,7 @@ void generateReport(PriorityQueue* q, int totalTasks)
 
     printf("\n=== TASK SCHEDULING REPORT ===\n");
     printf("Total tasks processed: %d\n", totalTasks);
-
-    // Calculate average wait time (you would need to track this in your simulation)
-    // This is just a placeholder - you'd need to implement proper tracking
-    printf("Average wait time: %.2f seconds\n", 0.0);
+    printf("Average wait time: %.2f seconds\n", 0.0); // Placeholder
     printf("================================\n");
 }
 
@@ -149,16 +169,11 @@ void simulateScheduler()
     int choice;
     int totalTasksProcessed = 0;
 
-    printf("=== Task Scheduling System ===\n");
-
     while (1)
     {
-        printf("\nMenu:\n");
-        printf("1. Add new task\n");
-        printf("2. Process next task\n");
-        printf("3. View current queue\n");
-        printf("4. Generate report and exit\n");
-        printf("Enter choice: ");
+        clearScreen();
+        printf("=== Task Scheduling System ===\n");
+        showMenu();
         scanf("%d", &choice);
         getchar(); // Consume newline
 
@@ -166,66 +181,72 @@ void simulateScheduler()
         {
         case 1:
         {
-            // Add new task
+            clearScreen();
+            printf("=== Add New Task ===\n");
             Task newTask;
             newTask.id = taskId++;
             printf("Enter task description: ");
             fgets(newTask.description, sizeof(newTask.description), stdin);
-            newTask.description[strcspn(newTask.description, "\n")] = '\0'; // Remove newline
+            newTask.description[strcspn(newTask.description, "\n")] = '\0';
             printf("Enter priority (1-10, 10=highest): ");
             scanf("%d", &newTask.priority);
             newTask.arrival_time = time(NULL);
 
             enqueue(&taskQueue, newTask);
-            printf("Task added successfully!\n");
+            printf("\nTask added successfully! Press Enter to continue...");
+            getchar(); // Wait for user to press Enter
             break;
         }
         case 2:
         {
-            // Process next task
+            clearScreen();
             if (isEmpty(&taskQueue))
             {
                 printf("No tasks in queue!\n");
             }
             else
             {
+                printf("=== Processing Task ===\n");
                 Task currentTask = dequeue(&taskQueue);
                 currentTask.start_time = time(NULL);
 
-                printf("\nProcessing Task %d: %s (Priority: %d)\n",
+                printf("\nTask %d: %s (Priority: %d)\n",
                        currentTask.id, currentTask.description, currentTask.priority);
-                printf("Task started at: %s", ctime(&currentTask.start_time));
+                printf("Started at: %s", ctime(&currentTask.start_time));
 
-                // Simulate task processing (sleep for random time)
                 int processingTime = 1 + rand() % 5;
                 printf("Processing for %d seconds...\n", processingTime);
                 sleep(processingTime);
 
                 currentTask.completion_time = time(NULL);
-                printf("Task completed at: %s", ctime(&currentTask.completion_time));
-
+                printf("\nTask completed at: %s", ctime(&currentTask.completion_time));
                 totalTasksProcessed++;
             }
+            printf("\nPress Enter to continue...");
+            getchar(); // Wait for user to press Enter
             break;
         }
-
         case 3:
         {
-            // View
             displayQueue(&taskQueue);
+            printf("\nPress Enter to continue...");
+            getchar(); // Wait for user to press Enter
             break;
         }
         case 4:
         {
-            // Generate report and exit
             generateReport(&taskQueue, totalTasksProcessed);
+            printf("\nPress Enter to exit...");
+            getchar(); // Wait for user to press Enter
             return;
         }
         default:
         {
+            clearScreen();
             printf("Invalid choice! Try again.\n");
+            sleep(1);
+            break;
         }
         }
     }
 }
-

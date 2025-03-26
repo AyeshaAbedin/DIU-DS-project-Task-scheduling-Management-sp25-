@@ -7,6 +7,10 @@
 
 #define DATA_FILE "task_records.dat"
 
+<<<<<<< Updated upstream:source main code.c
+=======
+// Task structure
+>>>>>>> Stashed changes:source main code .c
 typedef struct {
     int id;
     char description[100];
@@ -41,7 +45,7 @@ void enqueue(PriorityQueue* q, Task newTask);
 Task dequeue(PriorityQueue* q);
 void displayQueue(PriorityQueue* q);
 void generateReport(ProcessedTasksList* processed);
-void simulateScheduler();
+void simulateScheduler(ProcessedTasksList* processedTasks);
 void clearScreen();
 void showMenu();
 void initializeProcessedList(ProcessedTasksList* list);
@@ -50,10 +54,21 @@ void freeProcessedList(ProcessedTasksList* list);
 void freeQueue(PriorityQueue* q);
 void saveTasksToFile(ProcessedTasksList* list);
 void loadTasksFromFile(ProcessedTasksList* list);
+<<<<<<< Updated upstream:source main code.c
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
+=======
+int getNextId(ProcessedTasksList* list);
+>>>>>>> Stashed changes:source main code .c
 
 int main() {
-    simulateScheduler();
+    ProcessedTasksList processedTasks;
+    initializeProcessedList(&processedTasks);
+    loadTasksFromFile(&processedTasks);
+
+    simulateScheduler(&processedTasks);
+
+    saveTasksToFile(&processedTasks);
+    freeProcessedList(&processedTasks);
     return 0;
 }
 
@@ -86,6 +101,7 @@ void initializeProcessedList(ProcessedTasksList* list) {
     list->capacity = 0;
 }
 
+<<<<<<< Updated upstream:source main code.c
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id) {
     // Check in processed tasks
     for (int i = 0; i < list->size; i++) {
@@ -104,6 +120,16 @@ int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id) {
     }
 
     return 1;
+=======
+int getNextId(ProcessedTasksList* list) {
+    int max_id = 0;
+    for (int i = 0; i < list->size; i++) {
+        if (list->tasks[i].id > max_id) {
+            max_id = list->tasks[i].id;
+        }
+    }
+    return max_id + 1;
+>>>>>>> Stashed changes:source main code .c
 }
 
 void addToProcessedList(ProcessedTasksList* list, Task task) {
@@ -285,6 +311,7 @@ void loadTasksFromFile(ProcessedTasksList* list) {
     fclose(file);
 }
 
+<<<<<<< Updated upstream:source main code.c
 void simulateScheduler() {
     PriorityQueue taskQueue;
     initializeQueue(&taskQueue);
@@ -293,7 +320,14 @@ void simulateScheduler() {
     initializeProcessedList(&processedTasks);
     loadTasksFromFile(&processedTasks);
 
+=======
+void simulateScheduler(ProcessedTasksList* processedTasks) {
+    PriorityQueue taskQueue;
+    initializeQueue(&taskQueue);
+
+>>>>>>> Stashed changes:source main code .c
     int choice;
+    srand(time(NULL));
 
     while (1) {
         clearScreen();
@@ -311,6 +345,10 @@ void simulateScheduler() {
                 clearScreen();
                 printf("=== Add New Task ===\n");
                 Task newTask;
+<<<<<<< Updated upstream:source main code.c
+=======
+                newTask.id = getNextId(processedTasks);
+>>>>>>> Stashed changes:source main code .c
                 newTask.processing_time = 0.0;
 
                 // Get ID from user
@@ -375,8 +413,13 @@ void simulateScheduler() {
                     printf("\nTask completed at: %s", ctime(&currentTask.completion_time));
                     printf("Processing time: %.2f seconds\n", currentTask.processing_time);
 
+<<<<<<< Updated upstream:source main code.c
                     addToProcessedList(&processedTasks, currentTask);
                     saveTasksToFile(&processedTasks);
+=======
+                    addToProcessedList(processedTasks, currentTask);
+                    saveTasksToFile(processedTasks); // Auto-save after each task
+>>>>>>> Stashed changes:source main code .c
                 }
                 printf("\nPress Enter to continue...");
                 getchar();
@@ -389,16 +432,19 @@ void simulateScheduler() {
                 break;
             }
             case 4: {
-                generateReport(&processedTasks);
+                generateReport(processedTasks);
                 printf("\nPress Enter to continue...");
                 getchar();
                 break;
             }
             case 5: {
                 freeQueue(&taskQueue);
-                freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
+<<<<<<< Updated upstream:source main code.c
                 return;
+=======
+                 return;
+>>>>>>> Stashed changes:source main code .c
             }
         }
     }
