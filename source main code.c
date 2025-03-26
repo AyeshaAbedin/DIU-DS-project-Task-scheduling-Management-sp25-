@@ -16,7 +16,7 @@ typedef struct {
     time_t completion_time;
     double wait_time;
     double processing_time;
-} Task;
+}Task;
 
 typedef struct Node {
     Task task;
@@ -50,7 +50,7 @@ void freeProcessedList(ProcessedTasksList* list);
 void freeQueue(PriorityQueue* q);
 void saveTasksToFile(ProcessedTasksList* list);
 void loadTasksFromFile(ProcessedTasksList* list);
-int getNextId(ProcessedTasksList* list);
+int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 
 int main() {
     simulateScheduler();
@@ -86,14 +86,24 @@ void initializeProcessedList(ProcessedTasksList* list) {
     list->capacity = 0;
 }
 
-int getNextId(ProcessedTasksList* list) {
-    int max_id = 0;
+int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id) {
+    // Check in processed tasks
     for (int i = 0; i < list->size; i++) {
-        if (list->tasks[i].id > max_id) {
-            max_id = list->tasks[i].id;
+        if (list->tasks[i].id == id) {
+            return 0;
         }
     }
-    return max_id + 1;
+
+    // Check in queue
+    Node* current = q->front;
+    while (current != NULL) {
+        if (current->task.id == id) {
+            return 0;
+        }
+        current = current->next;
+    }
+
+    return 1;
 }
 
 void addToProcessedList(ProcessedTasksList* list, Task task) {
@@ -170,9 +180,9 @@ void displayQueue(PriorityQueue* q) {
     }
 
     printf("\nCurrent Task Queue:\n");
-    printf("-----------------------------------------------------------------\n");
-    printf("Serial\tTask Name\t\tPriority\tArrived\t\t\tStatus\n");
-    printf("-----------------------------------------------------------------\n");
+    printf("-----------------------------------------------------------------------------\n");
+    printf("Sr.No\tTask ID\tTask Name\t\tPriority\tArrived\t\t\tStatus\n");
+    printf("-----------------------------------------------------------------------------\n");
 
     Node* current = q->front;
     int serial = 1;
@@ -191,8 +201,9 @@ void displayQueue(PriorityQueue* q) {
             displayDesc[strlen(current->task.description)] = '\0';
         }
 
-        printf("%d\t%-20s\t%d\t\t%s\tPending\n",
+        printf("%d\t%d\t%-20s\t%d\t\t%s\tPending\n",
                serial++,
+               current->task.id,
                displayDesc,
                current->task.priority,
                timeBuf);
@@ -282,7 +293,6 @@ void simulateScheduler() {
     initializeProcessedList(&processedTasks);
     loadTasksFromFile(&processedTasks);
 
-    int taskId = getNextId(&processedTasks);
     int choice;
 
     while (1) {
@@ -301,8 +311,23 @@ void simulateScheduler() {
                 clearScreen();
                 printf("=== Add New Task ===\n");
                 Task newTask;
-                newTask.id = taskId++;
                 newTask.processing_time = 0.0;
+
+                // Get ID from user
+                printf("Enter task ID: ");
+                while (1) {
+                    if (scanf("%d", &newTask.id) == 1) {
+                        if (isIdUnique(&processedTasks, &taskQueue, newTask.id)) {
+                            break;
+                        } else {
+                            printf("ID already exists! Please enter a unique ID: ");
+                        }
+                    } else {
+                        printf("Invalid ID! Please enter a number: ");
+                        while (getchar() != '\n');
+                    }
+                }
+                getchar();
 
                 printf("Enter task description: ");
                 fgets(newTask.description, sizeof(newTask.description), stdin);
@@ -373,7 +398,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                 return;
+                return;
             }
         }
     }
