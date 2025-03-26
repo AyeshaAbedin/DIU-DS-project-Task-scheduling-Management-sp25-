@@ -16,7 +16,7 @@ typedef struct {
     time_t completion_time;
     double wait_time;
     double processing_time;
-}Task;
+} Task;
 
 typedef struct Node {
     Task task;
@@ -51,6 +51,7 @@ void freeQueue(PriorityQueue* q);
 void saveTasksToFile(ProcessedTasksList* list);
 void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
+void removeTask(PriorityQueue* q);
 
 int main() {
     simulateScheduler();
@@ -71,7 +72,8 @@ void showMenu() {
     printf("2. Process next task\n");
     printf("3. View current queue\n");
     printf("4. Generate report\n");
-    printf("5. Exit\n");
+    printf("5. Remove task\n");
+    printf("6. Exit\n");
     printf("Enter choice: ");
 }
 
@@ -87,14 +89,12 @@ void initializeProcessedList(ProcessedTasksList* list) {
 }
 
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id) {
-    // Check in processed tasks
     for (int i = 0; i < list->size; i++) {
         if (list->tasks[i].id == id) {
             return 0;
         }
     }
 
-    // Check in queue
     Node* current = q->front;
     while (current != NULL) {
         if (current->task.id == id) {
@@ -189,10 +189,8 @@ void displayQueue(PriorityQueue* q) {
     char timeBuf[20];
 
     while (current != NULL) {
-        // Format arrival time
         strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M", localtime(&current->task.arrival_time));
 
-        // Truncate description if too long
         char displayDesc[24];
         strncpy(displayDesc, current->task.description, 20);
         if (strlen(current->task.description) > 20) {
@@ -285,6 +283,183 @@ void loadTasksFromFile(ProcessedTasksList* list) {
     fclose(file);
 }
 
+void removeTask(PriorityQueue* q) {
+    clearScreen();
+    if (isEmpty(q)) {
+        printf("Queue is empty! No tasks to remove.\n");
+        printf("\nPress Enter to continue...");
+        getchar();
+        return;
+    }
+
+    int choice;
+    int taskId;
+    char taskDesc[100];
+    char confirm;
+    Node *current, *prev;
+    int found = 0;
+
+    printf("=== Remove Task ===\n");
+    printf("Search by:\n");
+    printf("1. Task ID\n");
+    printf("2. Task Name\n");
+    printf("Enter choice: ");
+
+    while (scanf("%d", &choice) != 1 || (choice != 1 && choice != 2)) {
+        printf("Invalid input! Please enter 1 or 2: ");
+        while (getchar() != '\n');
+    }
+    getchar();
+
+    if (choice == 1) {
+        printf("Enter task ID to remove: ");
+        while (scanf("%d", &taskId) != 1) {
+            printf("Invalid input! Please enter a number: ");
+            while (getchar() != '\n');
+        }
+        getchar();
+
+        current = q->front;
+        prev = NULL;
+
+        while (current != NULL) {
+            if (current->task.id == taskId) {
+                printf("\nFound task to remove:\n");
+                printf("ID: %d\n", current->task.id);
+                printf("Description: %s\n", current->task.description);
+                printf("Priority: %d\n", current->task.priority);
+
+                while (1) {
+                    printf("\nAre you sure you want to remove this task? (y/n): ");
+                    scanf(" %c", &confirm);
+                    getchar();
+                    confirm = tolower(confirm);
+
+                    if (confirm == 'y') {
+                        if (prev == NULL) {
+                            q->front = current->next;
+                        } else {
+                            prev->next = current->next;
+                        }
+                        free(current);
+                        q->size--;
+                        printf("Task removed successfully.\n");
+                        found = 1;
+                        break;
+                    }
+                    else if (confirm == 'n') {
+                        printf("Task removal cancelled.\n");
+                        break;
+                    }
+                    else {
+                        printf("Input invalid!\n");
+
+                        while (1) {
+                            printf("Do you want to continue? (y/n): ");
+                            scanf(" %c", &confirm);
+                            getchar();
+                            confirm = tolower(confirm);
+
+                            if (confirm == 'y') {
+                                removeTask(q);
+                                return;
+                            }
+                            else if (confirm == 'n') {
+                                printf("Returning to menu.\n");
+                                printf("\nPress Enter to continue...");
+                                getchar();
+                                return;
+                            }
+                            else {
+                                printf("Input invalid!\n");
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            prev = current;
+            current = current->next;
+        }
+    } else {
+        printf("Enter task name to remove: ");
+        fgets(taskDesc, sizeof(taskDesc), stdin);
+        taskDesc[strcspn(taskDesc, "\n")] = '\0';
+
+        current = q->front;
+        prev = NULL;
+
+        while (current != NULL) {
+            if (strcmp(current->task.description, taskDesc) == 0) {
+                printf("\nFound task to remove:\n");
+                printf("ID: %d\n", current->task.id);
+                printf("Description: %s\n", current->task.description);
+                printf("Priority: %d\n", current->task.priority);
+
+                while (1) {
+                    printf("\nAre you sure you want to remove this task? (y/n): ");
+                    scanf(" %c", &confirm);
+                    getchar();
+                    confirm = tolower(confirm);
+
+                    if (confirm == 'y') {
+                        if (prev == NULL) {
+                            q->front = current->next;
+                        } else {
+                            prev->next = current->next;
+                        }
+                        free(current);
+                        q->size--;
+                        printf("Task removed successfully.\n");
+                        found = 1;
+                        break;
+                    }
+                    else if (confirm == 'n') {
+                        printf("Task removal cancelled.\n");
+                        break;
+                    }
+                    else {
+                        printf("Input invalid!\n");
+
+                        while (1) {
+                            printf("Do you want to continue? (y/n): ");
+                            scanf(" %c", &confirm);
+                            getchar();
+                            confirm = tolower(confirm);
+
+                            if (confirm == 'y') {
+                                removeTask(q);
+                                return;
+                            }
+                            else if (confirm == 'n') {
+                                printf("Returning to menu.\n");
+                                printf("\nPress Enter to continue...");
+                                getchar();
+                                return;
+                            }
+                            else {
+                                printf("Input invalid!\n");
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            prev = current;
+            current = current->next;
+        }
+    }
+
+    if (!found && choice == 1) {
+        printf("No task found with ID %d.\n", taskId);
+    } else if (!found) {
+        printf("No task found with name '%s'.\n", taskDesc);
+    }
+
+    printf("\nPress Enter to continue...");
+    getchar();
+}
+
 void simulateScheduler() {
     PriorityQueue taskQueue;
     initializeQueue(&taskQueue);
@@ -300,8 +475,8 @@ void simulateScheduler() {
         printf("=== Task Scheduling System ===\n");
         showMenu();
 
-        while (scanf("%d", &choice) != 1 || choice < 1 || choice > 5) {
-            printf("Invalid input! Please enter a number between 1-5: ");
+        while (scanf("%d", &choice) != 1 || choice < 1 || choice > 6) {
+            printf("Invalid input! Please enter a number between 1-6: ");
             while (getchar() != '\n');
         }
         getchar();
@@ -313,7 +488,6 @@ void simulateScheduler() {
                 Task newTask;
                 newTask.processing_time = 0.0;
 
-                // Get ID from user
                 printf("Enter task ID: ");
                 while (1) {
                     if (scanf("%d", &newTask.id) == 1) {
@@ -395,6 +569,10 @@ void simulateScheduler() {
                 break;
             }
             case 5: {
+                removeTask(&taskQueue);
+                break;
+            }
+            case 6: {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
