@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <ctype.h>
 
+#define DATA_FILE "task_records.dat"
+
 // Task structure
 typedef struct {
     int id;
@@ -43,16 +45,26 @@ void enqueue(PriorityQueue* q, Task newTask);
 Task dequeue(PriorityQueue* q);
 void displayQueue(PriorityQueue* q);
 void generateReport(ProcessedTasksList* processed);
-void simulateScheduler();
+void simulateScheduler(ProcessedTasksList* processedTasks);
 void clearScreen();
 void showMenu();
 void initializeProcessedList(ProcessedTasksList* list);
 void addToProcessedList(ProcessedTasksList* list, Task task);
 void freeProcessedList(ProcessedTasksList* list);
 void freeQueue(PriorityQueue* q);
+void saveTasksToFile(ProcessedTasksList* list);
+void loadTasksFromFile(ProcessedTasksList* list);
+int getNextId(ProcessedTasksList* list);
 
 int main() {
-    simulateScheduler();
+    ProcessedTasksList processedTasks;
+    initializeProcessedList(&processedTasks);
+    loadTasksFromFile(&processedTasks);
+
+    simulateScheduler(&processedTasks);
+
+    saveTasksToFile(&processedTasks);
+    freeProcessedList(&processedTasks);
     return 0;
 }
 
@@ -83,6 +95,16 @@ void initializeProcessedList(ProcessedTasksList* list) {
     list->tasks = NULL;
     list->size = 0;
     list->capacity = 0;
+}
+
+int getNextId(ProcessedTasksList* list) {
+    int max_id = 0;
+    for (int i = 0; i < list->size; i++) {
+        if (list->tasks[i].id > max_id) {
+            max_id = list->tasks[i].id;
+        }
+    }
+    return max_id + 1;
 }
 
 void addToProcessedList(ProcessedTasksList* list, Task task) {
@@ -200,15 +222,53 @@ void generateReport(ProcessedTasksList* processed) {
     printf("\n================================\n");
 }
 
-void simulateScheduler() {
+void saveTasksToFile(ProcessedTasksList* list) {
+    FILE* file = fopen(DATA_FILE, "wb");
+    if (!file) {
+        perror("Failed to save data");
+        return;
+    }
+
+    fwrite(&list->size, sizeof(int), 1, file);
+    fwrite(list->tasks, sizeof(Task), list->size, file);
+    fclose(file);
+}
+
+void loadTasksFromFile(ProcessedTasksList* list) {
+    FILE* file = fopen(DATA_FILE, "rb");
+    if (!file) return;
+
+    int size;
+    if (fread(&size, sizeof(int), 1, file) != 1) {
+        fclose(file);
+        return;
+    }
+
+    Task* tasks = malloc(size * sizeof(Task));
+    if (!tasks) {
+        perror("Failed to allocate memory");
+        fclose(file);
+        return;
+    }
+
+    if (fread(tasks, sizeof(Task), size, file) != size) {
+        free(tasks);
+        fclose(file);
+        return;
+    }
+
+    list->tasks = tasks;
+    list->size = size;
+    list->capacity = size;
+    fclose(file);
+}
+
+void simulateScheduler(ProcessedTasksList* processedTasks) {
     PriorityQueue taskQueue;
     initializeQueue(&taskQueue);
 
-    ProcessedTasksList processedTasks;
-    initializeProcessedList(&processedTasks);
-
-    int taskId = 1;
     int choice;
+    srand(time(NULL));
 
     while (1) {
         clearScreen();
@@ -226,7 +286,7 @@ void simulateScheduler() {
                 clearScreen();
                 printf("=== Add New Task ===\n");
                 Task newTask;
-                newTask.id = taskId++;
+                newTask.id = getNextId(processedTasks);
                 newTask.processing_time = 0.0;
 
                 printf("Enter task description: ");
@@ -275,7 +335,8 @@ void simulateScheduler() {
                     printf("\nTask completed at: %s", ctime(&currentTask.completion_time));
                     printf("Processing time: %.2f seconds\n", currentTask.processing_time);
 
-                    addToProcessedList(&processedTasks, currentTask);
+                    addToProcessedList(processedTasks, currentTask);
+                    saveTasksToFile(processedTasks); // Auto-save after each task
                 }
                 printf("\nPress Enter to continue...");
                 getchar();
@@ -288,17 +349,16 @@ void simulateScheduler() {
                 break;
             }
             case 4: {
-                generateReport(&processedTasks);
+                generateReport(processedTasks);
                 printf("\nPress Enter to continue...");
                 getchar();
                 break;
             }
             case 5: {
                 freeQueue(&taskQueue);
-                freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
                 return;
-        }
+            }
         }
     }
 }
