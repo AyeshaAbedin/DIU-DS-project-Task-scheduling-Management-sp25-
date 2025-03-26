@@ -7,6 +7,10 @@
 
 #define DATA_FILE "task_records.dat"
 
+// Global counter for task IDs
+static int next_id = 1;
+
+// Task structure
 typedef struct {
     int id;
     char description[100];
@@ -18,16 +22,19 @@ typedef struct {
     double processing_time;
 } Task;
 
+// Node for priority queue
 typedef struct Node {
     Task task;
     struct Node* next;
 } Node;
 
+// Priority Queue
 typedef struct {
     Node* front;
     int size;
 } PriorityQueue;
 
+// Processed tasks list
 typedef struct {
     Task* tasks;
     int size;
@@ -41,7 +48,7 @@ void enqueue(PriorityQueue* q, Task newTask);
 Task dequeue(PriorityQueue* q);
 void displayQueue(PriorityQueue* q);
 void generateReport(ProcessedTasksList* processed);
-void simulateScheduler();
+void simulateScheduler(ProcessedTasksList* processedTasks);
 void clearScreen();
 void showMenu();
 void initializeProcessedList(ProcessedTasksList* list);
@@ -50,10 +57,26 @@ void freeProcessedList(ProcessedTasksList* list);
 void freeQueue(PriorityQueue* q);
 void saveTasksToFile(ProcessedTasksList* list);
 void loadTasksFromFile(ProcessedTasksList* list);
-int getNextId(ProcessedTasksList* list);
 
 int main() {
-    simulateScheduler();
+    ProcessedTasksList processedTasks;
+    initializeProcessedList(&processedTasks);
+    loadTasksFromFile(&processedTasks);
+
+    // Initialize next_id based on loaded tasks
+    if (processedTasks.size > 0) {
+        int max_id = 0;
+        for (int i = 0; i < processedTasks.size; i++) {
+            if (processedTasks.tasks[i].id > max_id) {
+                max_id = processedTasks.tasks[i].id;
+            }
+        }
+        next_id = max_id + 1;
+    }
+
+    simulateScheduler(&processedTasks);
+    saveTasksToFile(&processedTasks);
+    freeProcessedList(&processedTasks);
     return 0;
 }
 
@@ -84,16 +107,6 @@ void initializeProcessedList(ProcessedTasksList* list) {
     list->tasks = NULL;
     list->size = 0;
     list->capacity = 0;
-}
-
-int getNextId(ProcessedTasksList* list) {
-    int max_id = 0;
-    for (int i = 0; i < list->size; i++) {
-        if (list->tasks[i].id > max_id) {
-            max_id = list->tasks[i].id;
-        }
-    }
-    return max_id + 1;
 }
 
 void addToProcessedList(ProcessedTasksList* list, Task task) {
@@ -168,35 +181,18 @@ void displayQueue(PriorityQueue* q) {
         printf("Queue is empty!\n");
         return;
     }
-
     printf("\nCurrent Task Queue:\n");
-    printf("-----------------------------------------------------------------\n");
-    printf("Serial\tTask Name\t\tPriority\tArrived\t\t\tStatus\n");
-    printf("-----------------------------------------------------------------\n");
+    printf("#\tID\tPriority\tDescription\n");
+    printf("----------------------------------------\n");
 
     Node* current = q->front;
     int serial = 1;
-    char timeBuf[20];
-
     while (current != NULL) {
-        // Format arrival time
-        strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M", localtime(&current->task.arrival_time));
-
-        // Truncate description if too long
-        char displayDesc[24];
-        strncpy(displayDesc, current->task.description, 20);
-        if (strlen(current->task.description) > 20) {
-            strcpy(displayDesc + 20, "...");
-        } else {
-            displayDesc[strlen(current->task.description)] = '\0';
-        }
-
-        printf("%d\t%-20s\t%d\t\t%s\tPending\n",
-               serial++,
-               displayDesc,
-               current->task.priority,
-               timeBuf);
-
+        printf("%d\t%d\t%d\t\t%s\n",
+              serial++,
+              current->task.id,
+              current->task.priority,
+              current->task.description);
         current = current->next;
     }
 }
@@ -229,7 +225,6 @@ void generateReport(ProcessedTasksList* processed) {
         printf("%d\t%d\t\t%.2f\t\t%.2f\t\t%s\n",
                task.id, task.priority, task.wait_time, task.processing_time, task.description);
     }
-
     printf("\n================================\n");
 }
 
@@ -239,7 +234,6 @@ void saveTasksToFile(ProcessedTasksList* list) {
         perror("Failed to save data");
         return;
     }
-
     fwrite(&list->size, sizeof(int), 1, file);
     fwrite(list->tasks, sizeof(Task), list->size, file);
     fclose(file);
@@ -274,16 +268,12 @@ void loadTasksFromFile(ProcessedTasksList* list) {
     fclose(file);
 }
 
-void simulateScheduler() {
+void simulateScheduler(ProcessedTasksList* processedTasks) {
     PriorityQueue taskQueue;
     initializeQueue(&taskQueue);
 
-    ProcessedTasksList processedTasks;
-    initializeProcessedList(&processedTasks);
-    loadTasksFromFile(&processedTasks);
-
-    int taskId = getNextId(&processedTasks);
     int choice;
+    srand(time(NULL));
 
     while (1) {
         clearScreen();
@@ -291,7 +281,7 @@ void simulateScheduler() {
         showMenu();
 
         while (scanf("%d", &choice) != 1 || choice < 1 || choice > 5) {
-            printf("Invalid input! Please enter a number between 1-5: ");
+            printf("Invalid input! Please enter 1-5: ");
             while (getchar() != '\n');
         }
         getchar();
@@ -301,7 +291,7 @@ void simulateScheduler() {
                 clearScreen();
                 printf("=== Add New Task ===\n");
                 Task newTask;
-                newTask.id = taskId++;
+                newTask.id = next_id++;
                 newTask.processing_time = 0.0;
 
                 printf("Enter task description: ");
@@ -312,7 +302,7 @@ void simulateScheduler() {
                 while (1) {
                     if (scanf("%d", &newTask.priority) == 1 && newTask.priority >= 1 && newTask.priority <= 10)
                         break;
-                    printf("Invalid priority! Please enter a value between 1-10: ");
+                    printf("Invalid priority! Please enter 1-10: ");
                     while (getchar() != '\n');
                 }
                 getchar();
@@ -350,8 +340,8 @@ void simulateScheduler() {
                     printf("\nTask completed at: %s", ctime(&currentTask.completion_time));
                     printf("Processing time: %.2f seconds\n", currentTask.processing_time);
 
-                    addToProcessedList(&processedTasks, currentTask);
-                    saveTasksToFile(&processedTasks);
+                    addToProcessedList(processedTasks, currentTask);
+                    saveTasksToFile(processedTasks);
                 }
                 printf("\nPress Enter to continue...");
                 getchar();
@@ -364,14 +354,13 @@ void simulateScheduler() {
                 break;
             }
             case 4: {
-                generateReport(&processedTasks);
+                generateReport(processedTasks);
                 printf("\nPress Enter to continue...");
                 getchar();
                 break;
             }
             case 5: {
                 freeQueue(&taskQueue);
-                freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
                 return;
             }
