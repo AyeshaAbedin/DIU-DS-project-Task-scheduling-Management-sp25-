@@ -299,6 +299,7 @@ void removeTask(PriorityQueue* q) {
     Node *current, *prev;
     int found = 0;
 
+    removal_start:  // Label to return to if user wants to continue after wrong input
     printf("=== Remove Task ===\n");
     printf("Search by:\n");
     printf("1. Task ID\n");
@@ -324,6 +325,7 @@ void removeTask(PriorityQueue* q) {
 
         while (current != NULL) {
             if (current->task.id == taskId) {
+                found = 1;
                 printf("\nFound task to remove:\n");
                 printf("ID: %d\n", current->task.id);
                 printf("Description: %s\n", current->task.description);
@@ -344,7 +346,6 @@ void removeTask(PriorityQueue* q) {
                         free(current);
                         q->size--;
                         printf("Task removed successfully.\n");
-                        found = 1;
                         break;
                     }
                     else if (confirm == 'n') {
@@ -352,28 +353,7 @@ void removeTask(PriorityQueue* q) {
                         break;
                     }
                     else {
-                        printf("Input invalid!\n");
-
-                        while (1) {
-                            printf("Do you want to continue? (y/n): ");
-                            scanf(" %c", &confirm);
-                            getchar();
-                            confirm = tolower(confirm);
-
-                            if (confirm == 'y') {
-                                removeTask(q);
-                                return;
-                            }
-                            else if (confirm == 'n') {
-                                printf("Returning to menu.\n");
-                                printf("\nPress Enter to continue...");
-                                getchar();
-                                return;
-                            }
-                            else {
-                                printf("Input invalid!\n");
-                            }
-                        }
+                        printf("Invalid input!\n");
                     }
                 }
                 break;
@@ -381,7 +361,27 @@ void removeTask(PriorityQueue* q) {
             prev = current;
             current = current->next;
         }
-    } else {
+
+        if (!found) {
+            printf("No task found with ID %d.\n", taskId);
+            printf("\nDo you want to try again? (y/n): ");
+            scanf(" %c", &confirm);
+            getchar();
+            confirm = tolower(confirm);
+
+            if (confirm == 'y') {
+                clearScreen();
+                goto removal_start;  // Go back to the start of removal process
+            }
+            else {
+                printf("Returning to main menu.\n");
+                printf("\nPress Enter to continue...");
+                getchar();
+                return;
+            }
+        }
+    }
+    else {
         printf("Enter task name to remove: ");
         fgets(taskDesc, sizeof(taskDesc), stdin);
         taskDesc[strcspn(taskDesc, "\n")] = '\0';
@@ -391,6 +391,7 @@ void removeTask(PriorityQueue* q) {
 
         while (current != NULL) {
             if (strcmp(current->task.description, taskDesc) == 0) {
+                found = 1;
                 printf("\nFound task to remove:\n");
                 printf("ID: %d\n", current->task.id);
                 printf("Description: %s\n", current->task.description);
@@ -411,7 +412,6 @@ void removeTask(PriorityQueue* q) {
                         free(current);
                         q->size--;
                         printf("Task removed successfully.\n");
-                        found = 1;
                         break;
                     }
                     else if (confirm == 'n') {
@@ -419,28 +419,7 @@ void removeTask(PriorityQueue* q) {
                         break;
                     }
                     else {
-                        printf("Input invalid!\n");
-
-                        while (1) {
-                            printf("Do you want to continue? (y/n): ");
-                            scanf(" %c", &confirm);
-                            getchar();
-                            confirm = tolower(confirm);
-
-                            if (confirm == 'y') {
-                                removeTask(q);
-                                return;
-                            }
-                            else if (confirm == 'n') {
-                                printf("Returning to menu.\n");
-                                printf("\nPress Enter to continue...");
-                                getchar();
-                                return;
-                            }
-                            else {
-                                printf("Input invalid!\n");
-                            }
-                        }
+                        printf("Invalid input!\n");
                     }
                 }
                 break;
@@ -448,12 +427,25 @@ void removeTask(PriorityQueue* q) {
             prev = current;
             current = current->next;
         }
-    }
 
-    if (!found && choice == 1) {
-        printf("No task found with ID %d.\n", taskId);
-    } else if (!found) {
-        printf("No task found with name '%s'.\n", taskDesc);
+        if (!found) {
+            printf("No task found with name '%s'.\n", taskDesc);
+            printf("\nDo you want to try again? (y/n): ");
+            scanf(" %c", &confirm);
+            getchar();
+            confirm = tolower(confirm);
+
+            if (confirm == 'y') {
+                clearScreen();
+                goto removal_start;  // Go back to the start of removal process
+            }
+            else {
+                printf("Returning to main menu.\n");
+                printf("\nPress Enter to continue...");
+                getchar();
+                return;
+            }
+        }
     }
 
     printf("\nPress Enter to continue...");
@@ -576,7 +568,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                return;
+                 return;
             }
         }
     }
