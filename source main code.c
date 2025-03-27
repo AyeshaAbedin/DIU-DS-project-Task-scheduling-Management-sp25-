@@ -568,7 +568,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                 return;
+                return;
             }
         }
     }
