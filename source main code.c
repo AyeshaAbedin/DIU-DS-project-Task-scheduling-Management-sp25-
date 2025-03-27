@@ -283,6 +283,7 @@ void loadTasksFromFile(ProcessedTasksList* list) {
     fclose(file);
 }
 
+// Updated removeTask function with improved input validation
 void removeTask(PriorityQueue* q) {
     clearScreen();
     if (isEmpty(q)) {
@@ -299,7 +300,7 @@ void removeTask(PriorityQueue* q) {
     Node *current, *prev;
     int found = 0;
 
-    removal_start:  // Label to return to if user wants to continue after wrong input
+removal_start:
     printf("=== Remove Task ===\n");
     printf("Search by:\n");
     printf("1. Task ID\n");
@@ -364,14 +365,22 @@ void removeTask(PriorityQueue* q) {
 
         if (!found) {
             printf("No task found with ID %d.\n", taskId);
-            printf("\nDo you want to try again? (y/n): ");
-            scanf(" %c", &confirm);
-            getchar();
-            confirm = tolower(confirm);
+            do {
+                printf("\nDo you want to try again? (y/n): ");
+                if (scanf(" %c", &confirm) != 1) {
+                    while (getchar() != '\n');
+                    confirm = ' ';
+                }
+                getchar();
+                confirm = tolower(confirm);
+
+                if (confirm != 'y' && confirm != 'n')
+                    printf("Invalid input! Please enter 'y' or 'n'.\n");
+            } while (confirm != 'y' && confirm != 'n');
 
             if (confirm == 'y') {
                 clearScreen();
-                goto removal_start;  // Go back to the start of removal process
+                goto removal_start;
             }
             else {
                 printf("Returning to main menu.\n");
@@ -430,14 +439,22 @@ void removeTask(PriorityQueue* q) {
 
         if (!found) {
             printf("No task found with name '%s'.\n", taskDesc);
-            printf("\nDo you want to try again? (y/n): ");
-            scanf(" %c", &confirm);
-            getchar();
-            confirm = tolower(confirm);
+            do {
+                printf("\nDo you want to try again? (y/n): ");
+                if (scanf(" %c", &confirm) != 1) {
+                    while (getchar() != '\n');
+                    confirm = ' ';
+                }
+                getchar();
+                confirm = tolower(confirm);
+
+                if (confirm != 'y' && confirm != 'n')
+                    printf("Invalid input! Please enter 'y' or 'n'.\n");
+            } while (confirm != 'y' && confirm != 'n');
 
             if (confirm == 'y') {
                 clearScreen();
-                goto removal_start;  // Go back to the start of removal process
+                goto removal_start;
             }
             else {
                 printf("Returning to main menu.\n");
@@ -532,10 +549,10 @@ void simulateScheduler() {
                     printf("Waited for: %.2f seconds\n", currentTask.wait_time);
 
                     printf("\nProcessing task... Press Enter when complete...");
-                    clock_t start = clock();
+                    time_t start_real = time(NULL);
                     getchar();
-                    clock_t end = clock();
-                    currentTask.processing_time = (double)(end - start) / CLOCKS_PER_SEC;
+                    time_t end_real = time(NULL);
+                    currentTask.processing_time = difftime(end_real, start_real);
 
                     currentTask.completion_time = time(NULL);
                     printf("\nTask completed at: %s", ctime(&currentTask.completion_time));
