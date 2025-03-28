@@ -73,29 +73,29 @@ void displayLogo()
     printf("\n\n\n");
 
 
-    printf("\t\t\t __________            _      _____         _                    _\n");
+    printf("\t\t\t"BHCYN    " __________            _      _____         _                    _\n");
     printf("\t\t\t|          |          | |    //____|       | |                  | |\n");
     printf("\t\t\t ---| | ---           | |    ||            | |                  | |\n");
     printf("\t\t\t    | |   ____  _____ | | // ||___    ____ | |___   _____    ___| |\n");
     printf("\t\t\t    | |  //  || ||    | |//       \\\\ //__()| |___|//_____\\\\ /___| |    \n");
     printf("\t\t\t    | | ||   || ||--- | |\\\\  _____|| ||___ | |  ||||_____   |___| |\n");
-    printf("\t\t\t    |_|  \\\\__\\\\ ___|| |_| \\\\ |____|| \\\\___/|_|  ||||_____|  |___|_|\n");
+    printf("\t\t\t    |_|  \\\\__\\\\ ___|| |_| \\\\ |____|| \\\\___/|_|  ||||_____|  |___|_|"reset"\n");
     printf("\n");
     loadingBar();
 }
 void loadingBar()
 {
-    printf("\n\n\n\t\t\t\t\t\t Loading:-\n");
+    printf("\n\n\n\t\t\t\t\t\t Loading:-\n ");
 
-    char a = 45, b = 254;
+    char a = 196, b = 219;
     printf("\n\t\t\t\t\t");
-    for (int i = 0; i < 26; i++)
-        printf("%c", a);
+     for (int i = 0; i < 26; i++)
+        printf("%c",a);
     printf("\r\t\t\t\t\t");
     for (int i = 0; i < 26; i++)
     {
-        printf("%c", b);
-        Sleep(100);
+        printf(""BHCYN"%c"reset"" , b );
+        Sleep(80);
     }
     printf("\n");
 }
@@ -153,7 +153,7 @@ void showMenu()
         printf("%c\n", 187);
         printf("\t\t\t\t  %c                                            %c\n", 186,
                186);
-        printf( "  \t\t\t\t  %c"BGRN         "         TASK SCHEDULING SYSTEM"reset"         %c\n", 186,
+        printf( "  \t\t\t\t  %c"BHCYN "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
                 186);
         printf("\t\t\t\t  %c                                            %c\n", 186,
                186);
@@ -458,6 +458,15 @@ void generateReport(ProcessedTasksList* processed)
     }
 
     printf("\n\t\t\t\t\t=== TASK SCHEDULING REPORT ===\n");
+    for (int i = 0; i < 33; i++)
+    {
+        printf("%c", 205);
+    }
+
+    printf(" %c ", 111);
+    for (int i = 0; i < 33; i++)
+        printf("%c", 205);
+
     printf("Total tasks processed: %d\n", processed->size);
 
     double totalWaitTime = 0;
@@ -553,7 +562,16 @@ void removeTask(PriorityQueue* q)
 
 removal_start:
     gotoxy(45,3);
-    printf("=== Remove Task ===\n");
+    printf(" Remove Task \n");
+
+    for (int i = 0; i < 33; i++)
+    {
+        printf("%c", 205);
+    }
+
+    printf(" %c ", 111);
+    for (int i = 0; i < 33; i++)
+        printf("%c", 205);
     printf("\n\n\n\t\t\t\tSearch by:\n");
     printf("\t\t\t\t1. Task ID\n");
     printf("\t\t\t\t2. Task Name\n");
@@ -785,11 +803,20 @@ void simulateScheduler()
         case 1:
         {
             clearScreen();
-            gotoxy(45,3);
-            printf("=== Add New Task ===\n");
+            gotoxy(45,2);
+            printf("    Add New Task \n");
+   gotoxy(20,4);
+    for (int i = 0; i < 33; i++)
+    {
+        printf(""BHCYN"%c"reset"", 205);
+    }
+
+    printf(" %c ", 111);
+    for (int i = 0; i < 33; i++)
+        printf(""BHCYN"%c"reset"", 205);
             Task newTask;
             newTask.processing_time = 0.0;
-            gotoxy(40, 10);
+            gotoxy(40, 6);
             printf("Enter task ID: ");
             while (1)
             {
