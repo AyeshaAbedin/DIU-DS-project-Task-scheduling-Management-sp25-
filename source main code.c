@@ -35,6 +35,8 @@ typedef struct {
 } ProcessedTasksList;
 
 // Function prototypes
+void displayLogo();
+void showLoadingScreen();
 void initializeQueue(PriorityQueue* q);
 int isEmpty(PriorityQueue* q);
 void enqueue(PriorityQueue* q, Task newTask);
@@ -53,9 +55,30 @@ void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 void removeTask(PriorityQueue* q);
 
-int main() {
-    simulateScheduler();
-    return 0;
+void displayLogo() {
+    printf(" __________            _      _____         _                    _\n");
+    printf("|          |          | |    //____|       | |                  | |\n");
+    printf(" ---| | ---           | |    ||            | |                  | |\n");
+    printf("    | |   ____  _____ | | // ||___    ____ | |___   _____    ___| |\n");
+    printf("    | |  //  || ||    | |//       \\\\ //__()| |___|//_____\\\\ /___| |    \n");
+    printf("    | | ||   || ||--- | |\\\\  _____|| ||___ | |  ||||_____   |___| |\n");
+    printf("    |_|  \\\\__\\\\ ___|| |_| \\\\ |____|| \\\\___/|_|  ||||_____|  |___|_|\n");
+    printf("\n");
+}
+
+void showLoadingScreen() {
+    clearScreen();
+    printf("\n\nLoading Task Scheduler");
+    fflush(stdout);
+
+    for (int i = 0; i < 3; i++) {
+        sleep(1);
+        printf(".");
+        fflush(stdout);
+    }
+
+    sleep(1);
+    clearScreen();
 }
 
 void clearScreen() {
@@ -64,6 +87,21 @@ void clearScreen() {
 #else
     system("clear");
 #endif
+}
+
+int main() {
+    // First show the logo
+    clearScreen();
+    displayLogo();
+    printf("\nPress Enter to start...");
+    getchar();
+
+    // Then show loading screen
+    showLoadingScreen();
+
+    // Finally start the scheduler
+    simulateScheduler();
+    return 0;
 }
 
 void showMenu() {
@@ -283,7 +321,6 @@ void loadTasksFromFile(ProcessedTasksList* list) {
     fclose(file);
 }
 
-// Updated removeTask function with improved input validation
 void removeTask(PriorityQueue* q) {
     clearScreen();
     if (isEmpty(q)) {
@@ -585,7 +622,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                return;
+                 return;
             }
         }
     }
