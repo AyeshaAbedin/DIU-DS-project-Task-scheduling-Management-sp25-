@@ -246,9 +246,9 @@ void displayQueue(PriorityQueue* q) {
     }
 
     printf("\nCurrent Task Queue:\n");
-    printf("-----------------------------------------------------------------------------\n");
-    printf("Sr.No\tTask ID\tTask Name\t\tPriority\tArrived\t\t\tStatus\n");
-    printf("-----------------------------------------------------------------------------\n");
+    printf("------------------------------------------------------------------------------------------------\n");
+    printf("Sr.No\tTask ID\t\tTask Name\t\tPriority\tArrived\t\t\tStatus\n");
+    printf("------------------------------------------------------------------------------------------------\n");
 
     Node* current = q->front;
     int serial = 1;
@@ -265,7 +265,7 @@ void displayQueue(PriorityQueue* q) {
             displayDesc[strlen(current->task.description)] = '\0';
         }
 
-        printf("%d\t%d\t%-20s\t%d\t\t%s\tPending\n",
+        printf("%d\t%d\t\t%-20s\t%d\t\t%s\tPending\n",
                serial++,
                current->task.id,
                displayDesc,
