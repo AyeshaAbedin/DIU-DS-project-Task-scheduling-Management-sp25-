@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <windows.h> // for Sleep and cls
 #include<conio.h>
+#include"colour.h"
 #define DATA_FILE "task_records.dat"
 
 typedef struct
@@ -143,14 +144,54 @@ int main()
 
 void showMenu()
 {
-    printf("\n\n\n\t\t\t\tMenu:\n");
-    printf("\t\t\t\t1. Add new task\n");
-    printf("\t\t\t\t2. Process next task\n");
-    printf("\t\t\t\t3. View current queue\n");
-    printf("\t\t\t\t4. Generate report\n");
-    printf("\t\t\t\t5. Remove task\n");
-    printf("\t\t\t\t6. Exit\n");
-    printf("\t\t\t\tEnter choice: ");
+   system("cls");
+        printf("\n");
+        printf("\n\n\n");
+        printf("\t\t\t\t  %c", 201);
+        for (int i = 0; i < 44; i++)
+            printf("%c", 205);
+        printf("%c\n", 187);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf( "  \t\t\t\t  %c"BGRN         "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
+                186);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c", 204);
+        for (int i = 0; i < 44; i++)
+            printf("%c", 205);
+        printf("%c\n", 185);
+
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    1. Add new task                         %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    2. Process next task                    %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    3. View current queue                   %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    4. Generate report                      %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    5. Remove task                          %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c    6. Exit                                 %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c                                            %c\n", 186,
+               186);
+        printf("\t\t\t\t  %c", 200);
+        for (int i = 0; i < 44; i++)
+            printf("%c", 205);
+        printf("%c\n", 188);
+        gotoxy(40, 18);
+
+        printf(" Enter your choice: ");
+        //scanf("%d", &choice);
 }
 
 void initializeQueue(PriorityQueue* q)
