@@ -4,7 +4,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <ctype.h>
-
+#include <windows.h> // for Sleep and cls
+#include<conio.h>
 #define DATA_FILE "task_records.dat"
 
 typedef struct {
@@ -55,6 +56,13 @@ void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 void removeTask(PriorityQueue* q);
 void loadingBar();
+void gotoxy(int x, int y)
+{
+    COORD coord;
+    coord.X = x;
+    coord.Y = y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
 void displayLogo() {
    printf("\n\n\n");
 
@@ -538,6 +546,7 @@ void simulateScheduler() {
 
     while (1) {
         clearScreen();
+        gotoxy(45,2);
         printf("=== Task Scheduling System ===\n");
         showMenu();
 
@@ -550,10 +559,11 @@ void simulateScheduler() {
         switch (choice) {
             case 1: {
                 clearScreen();
+                gotoxy(45,3);
                 printf("=== Add New Task ===\n");
                 Task newTask;
                 newTask.processing_time = 0.0;
-
+                gotoxy(40, 10);
                 printf("Enter task ID: ");
                 while (1) {
                     if (scanf("%d", &newTask.id) == 1) {
@@ -568,11 +578,11 @@ void simulateScheduler() {
                     }
                 }
                 getchar();
-
+               gotoxy(40,12);
                 printf("Enter task description: ");
                 fgets(newTask.description, sizeof(newTask.description), stdin);
                 newTask.description[strcspn(newTask.description, "\n")] = '\0';
-
+                 gotoxy(40,14);
                 printf("Enter priority (1-10, 10=highest): ");
                 while (1) {
                     if (scanf("%d", &newTask.priority) == 1 && newTask.priority >= 1 && newTask.priority <= 10)
@@ -585,7 +595,7 @@ void simulateScheduler() {
                 newTask.arrival_time = time(NULL);
                 enqueue(&taskQueue, newTask);
 
-                printf("\nTask added successfully! Press Enter to continue...");
+                printf("\n\n\n\t\t\t\tTask added successfully! Press Enter to continue...");
                 getchar();
                 break;
             }
@@ -642,7 +652,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                return;
+                 return;
             }
         }
     }
