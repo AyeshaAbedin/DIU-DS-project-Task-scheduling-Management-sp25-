@@ -296,12 +296,12 @@ void generateReport(ProcessedTasksList* processed) {
     printf("Average processing time: %.2f seconds\n", totalProcessingTime / processed->size);
 
     printf("\nTask Details:\n");
-    printf("ID\tPriority\tWait Time\tProcessing Time\tDescription\n");
-    printf("------------------------------------------------------------\n");
+    printf("ID\tPriority\tWait Time\tProcessing Time\t\tDescription\n");
+    printf("-------------------------------------------------------------------------\n");
 
     for (int i = 0; i < processed->size; i++) {
         Task task = processed->tasks[i];
-        printf("%d\t%d\t\t%.2f\t\t%.2f\t\t%s\n",
+        printf("%d\t%d\t\t%.2f\t\t%.2f\t\t\t%s\n",
                task.id, task.priority, task.wait_time, task.processing_time, task.description);
     }
 
