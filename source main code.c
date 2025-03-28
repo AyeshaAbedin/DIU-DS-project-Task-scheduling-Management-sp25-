@@ -54,15 +54,35 @@ void saveTasksToFile(ProcessedTasksList* list);
 void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 void removeTask(PriorityQueue* q);
-
+void loadingBar();
 void displayLogo() {
-    printf(" __________            _      _____         _                    _\n");
-    printf("|          |          | |    //____|       | |                  | |\n");
-    printf(" ---| | ---           | |    ||            | |                  | |\n");
-    printf("    | |   ____  _____ | | // ||___    ____ | |___   _____    ___| |\n");
-    printf("    | |  //  || ||    | |//       \\\\ //__()| |___|//_____\\\\ /___| |    \n");
-    printf("    | | ||   || ||--- | |\\\\  _____|| ||___ | |  ||||_____   |___| |\n");
-    printf("    |_|  \\\\__\\\\ ___|| |_| \\\\ |____|| \\\\___/|_|  ||||_____|  |___|_|\n");
+   printf("\n\n\n");
+
+
+    printf("\t\t\t __________            _      _____         _                    _\n");
+    printf("\t\t\t|          |          | |    //____|       | |                  | |\n");
+    printf("\t\t\t ---| | ---           | |    ||            | |                  | |\n");
+    printf("\t\t\t    | |   ____  _____ | | // ||___    ____ | |___   _____    ___| |\n");
+    printf("\t\t\t    | |  //  || ||    | |//       \\\\ //__()| |___|//_____\\\\ /___| |    \n");
+    printf("\t\t\t    | | ||   || ||--- | |\\\\  _____|| ||___ | |  ||||_____   |___| |\n");
+    printf("\t\t\t    |_|  \\\\__\\\\ ___|| |_| \\\\ |____|| \\\\___/|_|  ||||_____|  |___|_|\n");
+    printf("\n");
+     loadingBar();
+}
+void loadingBar()
+{
+    printf("\n\n\n\t\t\t\t\t\t Loading:-\n");
+
+    char a = 45, b = 254;
+    printf("\n\t\t\t\t\t");
+    for (int i = 0; i < 26; i++)
+        printf("%c", a);
+    printf("\r\t\t\t\t\t");
+    for (int i = 0; i < 26; i++)
+    {
+        printf("%c", b);
+        Sleep(100);
+    }
     printf("\n");
 }
 
@@ -93,11 +113,11 @@ int main() {
     // First show the logo
     clearScreen();
     displayLogo();
-    printf("\nPress Enter to start...");
-    getchar();
+    //printf("\nPress Enter to start...");
+    //getchar();
 
     // Then show loading screen
-    showLoadingScreen();
+    //showLoadingScreen();
 
     // Finally start the scheduler
     simulateScheduler();
@@ -622,7 +642,7 @@ void simulateScheduler() {
                 freeQueue(&taskQueue);
                 freeProcessedList(&processedTasks);
                 printf("Exiting program. Goodbye!\n");
-                 return;
+                return;
             }
         }
     }
