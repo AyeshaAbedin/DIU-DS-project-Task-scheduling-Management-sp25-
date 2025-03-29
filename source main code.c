@@ -777,7 +777,7 @@ removal_start:
             printf("\t\t\t\tNo task found with name '%s'.\n", taskDesc);
             do
             {
-                printf("\n\t\t\t\tDo you want to try again? (y/n): ");
+                printf("\n\t\t\t\tDo you want to try again? (y/n): \n");
                 if (scanf(" %c", &confirm) != 1)
                 {
                     while (getchar() != '\n');
@@ -787,7 +787,7 @@ removal_start:
                 confirm = tolower(confirm);
 
                 if (confirm != 'y' && confirm != 'n')
-                    printf("\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
+                    printf("\t\t\tInvalid input!  Please enter 'y' or 'n'.\n");
             }
             while (confirm != 'y' && confirm != 'n');
 
