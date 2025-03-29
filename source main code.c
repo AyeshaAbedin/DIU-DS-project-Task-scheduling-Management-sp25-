@@ -457,40 +457,77 @@ void generateReport(ProcessedTasksList* processed)
         return;
     }
 
-    printf("\n\t\t\t\t\t=== TASK SCHEDULING REPORT ===\n");
-    for (int i = 0; i < 33; i++)
-    {
-        printf("%c", 205);
+    // Column width definitions
+    #define ID_WIDTH 6
+    #define PRIO_WIDTH 9
+    #define WAIT_WIDTH 11
+    #define PROC_WIDTH 16
+    #define DESC_WIDTH 24
+    #define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
+
+    // Top border
+
+    // Title
+
+    gotoxy(45, 3);
+    printf(BHCYN"=== TASK SCHEDULING REPORT ==="reset);
+
+
+     gotoxy(7,5);
+
+    printf("\t\t\t  %c", 201);
+    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    printf("%c\n", 187);
+
+    printf("\t\t\t  %c Total tasks processed    :%-*d%c\n",
+           186, TOTAL_WIDTH-29, processed->size, 186);
+
+    double totalWait = 0, totalProc = 0;
+    for(int i=0; i<processed->size; i++) {
+        totalWait += processed->tasks[i].wait_time;
+        totalProc += processed->tasks[i].processing_time;
     }
 
-    printf(" %c ", 111);
-    for (int i = 0; i < 33; i++)
-        printf("%c", 205);
+    printf("\t\t\t  %c Average wait time        :%-*.2f %c\n",
+           186, TOTAL_WIDTH-30, totalWait/processed->size, 186);
+    printf("\t\t\t  %c Average processing time  :%-*.2f%c\n",
+           186, TOTAL_WIDTH-29, totalProc/processed->size, 186);
 
-    printf("Total tasks processed: %d\n", processed->size);
+    // Table header separator
+    printf("\t\t\t  %c", 204);
+    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    printf("%c\n", 185);
 
-    double totalWaitTime = 0;
-    double totalProcessingTime = 0;
-    for (int i = 0; i < processed->size; i++)
-    {
-        totalWaitTime += processed->tasks[i].wait_time;
-        totalProcessingTime += processed->tasks[i].processing_time;
+    // Column headers
+    printf("\t\t\t  %c"BHCYN, 186);
+    printf("  %-*s    %-*s     %-*s     %-*s         %-*s  "reset"%c\n",
+           ID_WIDTH-2, "ID",
+           PRIO_WIDTH-4, "Priority",
+           WAIT_WIDTH-5, "Wait Time",
+           PROC_WIDTH-5, "Processing Time",
+           DESC_WIDTH-10, "Description", 186);
+
+    // Header separator
+    printf("\t\t\t  %c", 204);
+    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    printf("%c\n", 185);
+
+    // Task rows
+    for(int i=0; i<processed->size; i++) {
+        Task t = processed->tasks[i];
+        printf("\t\t\t  %c  %-*d  \t%-*d        %-*.2f     \t%-*.2f           \t %-*s  %c\n", 186,
+               ID_WIDTH-2, t.id,
+               PRIO_WIDTH-6, t.priority,
+               WAIT_WIDTH-16, t.wait_time,
+               PROC_WIDTH-11, t.processing_time,
+               DESC_WIDTH-11, t.description, 186);
     }
-    printf("Average wait time: %.2f seconds\n", totalWaitTime / processed->size);
-    printf("Average processing time: %.2f seconds\n", totalProcessingTime / processed->size);
 
-    printf("\nTask Details:\n");
-    printf("ID\tPriority\tWait Time\tProcessing Time\tDescription\n");
-    printf("------------------------------------------------------------\n");
+    // Bottom border
+    printf("\t\t\t  %c", 200);
+    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    printf("%c\n", 188);
 
-    for (int i = 0; i < processed->size; i++)
-    {
-        Task task = processed->tasks[i];
-        printf("%d\t%d\t\t%.2f\t\t%.2f\t\t%s\n",
-               task.id, task.priority, task.wait_time, task.processing_time, task.description);
-    }
-
-    printf("\n=========================================\n");
 }
 
 void saveTasksToFile(ProcessedTasksList* list)
@@ -973,11 +1010,11 @@ void simulateScheduler()
                 "\t\t\t    T     H   H  A   A  N   N  K   K       Y     OOO    UUU\n";
 
 
-            printf(""BHCYN"%s\n"reset"", lines);
+            printf("%s\n", lines);
 
             Sleep(4000);
             return;
-        }
+         }
         }
     }
 }
