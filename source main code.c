@@ -89,12 +89,12 @@ void loadingBar()
 
     char a = 196, b = 219;
     printf("\n\t\t\t\t\t");
-     for (int i = 0; i < 26; i++)
+    for (int i = 0; i < 26; i++)
         printf("%c",a);
     printf("\r\t\t\t\t\t");
     for (int i = 0; i < 26; i++)
     {
-        printf(""BHCYN"%c"reset"" , b );
+        printf(""BHCYN"%c"reset"", b );
         Sleep(80);
     }
     printf("\n");
@@ -144,54 +144,54 @@ int main()
 
 void showMenu()
 {
-   system("cls");
-        printf("\n");
-        printf("\n\n\n");
-        printf("\t\t\t\t  %c", 201);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 187);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf( "  \t\t\t\t  %c"BHCYN "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
-                186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c", 204);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 185);
+    system("cls");
+    printf("\n");
+    printf("\n\n\n");
+    printf("\t\t\t\t  %c", 201);
+    for (int i = 0; i < 44; i++)
+        printf("%c", 205);
+    printf("%c\n", 187);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf( "  \t\t\t\t  %c"BHCYN "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
+            186);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c", 204);
+    for (int i = 0; i < 44; i++)
+        printf("%c", 205);
+    printf("%c\n", 185);
 
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    1. Add new task                         %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    2. Process next task                    %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    3. View current queue                   %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    4. Generate report                      %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    5. Remove task                          %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    6. Exit                                 %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c", 200);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 188);
-        gotoxy(40, 18);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    1. Add new task                         %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    2. Process next task                    %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    3. View current queue                   %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    4. Generate report                      %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    5. Remove task                          %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c    6. Exit                                 %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c                                            %c\n", 186,
+           186);
+    printf("\t\t\t\t  %c", 200);
+    for (int i = 0; i < 44; i++)
+        printf("%c", 205);
+    printf("%c\n", 188);
+    gotoxy(40, 18);
 
-        printf(" Enter your choice: ");
-        //scanf("%d", &choice);
+    printf(" Enter your choice: ");
+    //scanf("%d", &choice);
 }
 
 void initializeQueue(PriorityQueue* q)
@@ -458,12 +458,12 @@ void generateReport(ProcessedTasksList* processed)
     }
 
     // Column width definitions
-    #define ID_WIDTH 6
-    #define PRIO_WIDTH 9
-    #define WAIT_WIDTH 11
-    #define PROC_WIDTH 16
-    #define DESC_WIDTH 24
-    #define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
+#define ID_WIDTH 6
+#define PRIO_WIDTH 9
+#define WAIT_WIDTH 11
+#define PROC_WIDTH 16
+#define DESC_WIDTH 24
+#define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
 
     // Top border
 
@@ -473,7 +473,7 @@ void generateReport(ProcessedTasksList* processed)
     printf(BHCYN"=== TASK SCHEDULING REPORT ==="reset);
 
 
-     gotoxy(7,5);
+    gotoxy(7,5);
 
     printf("\t\t\t  %c", 201);
     for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
@@ -483,7 +483,8 @@ void generateReport(ProcessedTasksList* processed)
            186, TOTAL_WIDTH-29, processed->size, 186);
 
     double totalWait = 0, totalProc = 0;
-    for(int i=0; i<processed->size; i++) {
+    for(int i=0; i<processed->size; i++)
+    {
         totalWait += processed->tasks[i].wait_time;
         totalProc += processed->tasks[i].processing_time;
     }
@@ -513,7 +514,8 @@ void generateReport(ProcessedTasksList* processed)
     printf("%c\n", 185);
 
     // Task rows
-    for(int i=0; i<processed->size; i++) {
+    for(int i=0; i<processed->size; i++)
+    {
         Task t = processed->tasks[i];
         printf("\t\t\t  %c  %-*d  \t%-*d        %-*.2f     \t%-*.2f           \t %-*s  %c\n", 186,
                ID_WIDTH-2, t.id,
@@ -842,15 +844,15 @@ void simulateScheduler()
             clearScreen();
             gotoxy(45,2);
             printf("    Add New Task \n");
-   gotoxy(20,4);
-    for (int i = 0; i < 33; i++)
-    {
-        printf(""BHCYN"%c"reset"", 205);
-    }
+            gotoxy(20,4);
+            for (int i = 0; i < 33; i++)
+            {
+                printf(""BHCYN"%c"reset"", 205);
+            }
 
-    printf(" %c ", 111);
-    for (int i = 0; i < 33; i++)
-        printf(""BHCYN"%c"reset"", 205);
+            printf(" %c ", 111);
+            for (int i = 0; i < 33; i++)
+                printf(""BHCYN"%c"reset"", 205);
             Task newTask;
             newTask.processing_time = 0.0;
             gotoxy(40, 6);
@@ -910,37 +912,84 @@ void simulateScheduler()
             }
             else
             {
-                gotoxy(45,3);
-                printf("=== Processing Task ===\n");
+                // Processing Box
+                int yPos = 2;
+                gotoxy(30, yPos++);
+                printf("%c", 201);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 187);
+
+                gotoxy(30, yPos++);
+                printf("%c"BHCYN"                       PROCESSING TASK                      "reset"%c\n", 186, 186);
+
+                gotoxy(30, yPos++);
+                printf("%c", 204);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 185);
+
                 Task currentTask = dequeue(&taskQueue);
                 currentTask.start_time = time(NULL);
                 currentTask.wait_time = difftime(currentTask.start_time, currentTask.arrival_time);
 
-                printf("\n\n\t\t\t\tTask %d: %s (Priority: %d)\n",
-                       currentTask.id, currentTask.description, currentTask.priority);
+                // Task Details
+                gotoxy(30, yPos++);
+                printf("%c Task ID    :   %-43d %c\n", 186, currentTask.id, 186);
+                gotoxy(30, yPos++);
+                printf("%c Description:   %-44s%c\n", 186, currentTask.description, 186);
+                gotoxy(30, yPos++);
+                printf("%c Priority   :   %-43d %c\n", 186, currentTask.priority, 186);
+                gotoxy(30, yPos++);
+                printf("%c Arrival    :   %-43.24s %c\n", 186, ctime(&currentTask.arrival_time), 186);
+                gotoxy(30, yPos++);
+                printf("%c Start Time :   %-43.24s %c\n", 186, ctime(&currentTask.start_time), 186);
+                gotoxy(30, yPos++);
+                printf("%c Wait Time  :   %-43.2f %c\n", 186, currentTask.wait_time, 186);
 
-                printf("\t\t\t\tArrived at: %s", ctime(&currentTask.arrival_time));
+                gotoxy(30, yPos++);
+                printf("%c", 200);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 188);
 
-                printf("\t\t\t\tStarted at: %s", ctime(&currentTask.start_time));
+                gotoxy(30, yPos++);
 
-                printf("\t\t\t\tWaited for: %.2f seconds\n", currentTask.wait_time);
-                ;
-                printf("\n\n\t\t\t\tProcessing task... Press Enter when complete...");
+                printf(" Press Enter when complete...");
+
+                // Wait for completion
                 time_t start_real = time(NULL);
                 getchar();
                 time_t end_real = time(NULL);
                 currentTask.processing_time = difftime(end_real, start_real);
-
                 currentTask.completion_time = time(NULL);
 
-                printf("\n\t\t\t\tTask completed at: %s\n", ctime(&currentTask.completion_time));
+                // Completion Box (appears below processing box)
+                yPos += 1; // Add space between boxes
+                gotoxy(30, yPos++);
+                printf("%c", 201);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 187);
 
-                printf("\n\t\t\t\tProcessing time: %.2f seconds\n", currentTask.processing_time);
+                gotoxy(30, yPos++);
+                printf("%c"BHCYN"                      TASK COMPLETED                       "reset" %c\n", 186, 186);
+
+                gotoxy(30, yPos++);
+                printf("%c", 204);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 185);
+
+                gotoxy(30, yPos++);
+                printf("%c Completed at:%-45.24s %c\n", 186, ctime(&currentTask.completion_time), 186);
+                gotoxy(30, yPos++);
+                printf("%c Processing  :%-45.2f %c\n", 186, currentTask.processing_time, 186);
+
+                gotoxy(30, yPos++);
+                printf("%c", 200);
+                for(int i = 0; i < 60; i++) printf("%c", 205);
+                printf("%c\n", 188);
 
                 addToProcessedList(&processedTasks, currentTask);
                 saveTasksToFile(&processedTasks);
             }
-            printf("\n\n\n\t\t\t\tPress Enter to continue...");
+            printf("\n\n\t\t\t\tPress Enter to continue...");
             getchar();
             break;
         }
@@ -1014,7 +1063,7 @@ void simulateScheduler()
 
             Sleep(4000);
             return;
-         }
+        }
         }
     }
 }
