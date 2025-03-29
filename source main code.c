@@ -153,7 +153,7 @@ void showMenu()
         printf("%c\n", 187);
         printf("\t\t\t\t  %c                                            %c\n", 186,
                186);
-        printf( "  \t\t\t\t  %c"BHCYN "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
+        printf( "  \t\t\t\t  %c"BHCYN "          TASK SCHEDULING SYSTEM"reset"            %c\n", 186,
                 186);
         printf("\t\t\t\t  %c                                            %c\n", 186,
                186);
@@ -299,9 +299,9 @@ void enqueue(PriorityQueue* q, Task newTask)
 Task dequeue(PriorityQueue* q)
 {
     if (isEmpty(q))
-    {
+    {  gotoxy(45,5);
         printf("\t\t\t\tQueue is empty!\n");
-        exit(EXIT_FAILURE);
+        getchar();
     }
     Node* temp = q->front;
     Task task = temp->task;
@@ -315,9 +315,9 @@ void displayQueue(PriorityQueue* q)
 {
     clearScreen();
     if(isEmpty(q))
-    {
+    {   gotoxy(45,5);
         printf("Queue is empty!\n");
-        Sleep(2000);
+
         return;
     }
 
@@ -333,8 +333,8 @@ void displayQueue(PriorityQueue* q)
 #define BGRN "\033[1;32m"
 #define reset "\033[0m"
 
-    printf(BGRN"\n\t\t\t   Current Task Queue \n"reset);
-
+    printf(BHCYN"\n\t\t\t\t\t   Current Task Queue \n"reset);
+   gotoxy( 0,3);
     // Top border
     printf("%c", 201);
     for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
@@ -583,9 +583,9 @@ void removeTask(PriorityQueue* q)
     if (isEmpty(q))
     {
 
-        printf("\t\t\t\tQueue is empty! No tasks to remove.\n");
+        printf("\n\n\n\n\t\t\t\tQueue is empty! No tasks to remove.\n");
 
-        printf("\n\n\t\t\t\tPress Enter to continue...");
+        printf("\n\n\n\t\t\t\tPress Enter to continue...");
         getchar();
         return;
     }
@@ -599,13 +599,13 @@ void removeTask(PriorityQueue* q)
 
 removal_start:
     gotoxy(45,3);
-    printf(" Remove Task \n");
-
+    printf(""BHCYN"\t      == Remove Task ==\n"reset"");
+   gotoxy(28,5);
     for (int i = 0; i < 33; i++)
     {
         printf("%c", 205);
     }
-
+    gotoxy(28+34,5);
     printf(" %c ", 111);
     for (int i = 0; i < 33; i++)
         printf("%c", 205);
@@ -684,20 +684,20 @@ removal_start:
 
         if (!found)
         {
-            printf("\t\t\t\tNo task found with ID %d.\n", taskId);
+            printf("\n\t\t\t\tNo task found with ID %d.\n", taskId);
             do
             {
-                printf("\n\t\t\t\tDo you want to try again? (y/n): ");
+                printf("\n\t\n\t\t\t\tDo you want to try again? (y/n): ");
                 if (scanf(" %c", &confirm) != 1)
                 {
                     while (getchar() != '\n');
-                    confirm = ' ';
+                    confirm = '     ';
                 }
                 getchar();
                 confirm = tolower(confirm);
 
                 if (confirm != 'y' && confirm != 'n')
-                    printf("\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
+                    printf("\n\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
             }
             while (confirm != 'y' && confirm != 'n');
 
@@ -708,8 +708,8 @@ removal_start:
             }
             else
             {
-                printf("\n\t\t\t\tReturning to main menu.\n");
-                printf("\n\t\t\t\tPress Enter to continue...");
+                printf("\n\t\t\t\t\tReturning to main menu.\n");
+                printf("\n\t\t\t\t\tPress Enter to continue...");
                 getchar();
                 return;
             }
@@ -736,7 +736,7 @@ removal_start:
 
                 while (1)
                 {
-                    printf("\n\t\t\t\tAre you sure you want to remove this task? (y/n): ");
+                    printf("\n\t\t\t\t\tAre you sure you want to remove this task? (y/n): ");
                     scanf(" %c", &confirm);
                     getchar();
                     confirm = tolower(confirm);
@@ -772,22 +772,22 @@ removal_start:
             current = current->next;
         }
 
-        if (!found)
+       if (!found)
         {
-            printf("\t\t\t\tNo task found with name '%s'.\n", taskDesc);
+            printf("\n\t\t\t\tNo task found with Name %s\n", taskDesc);
             do
             {
-                printf("\n\t\t\t\tDo you want to try again? (y/n): \n");
+                printf("\n\t\n\t\t\t\tDo you want to try again? (y/n): ");
                 if (scanf(" %c", &confirm) != 1)
                 {
                     while (getchar() != '\n');
-                    confirm = ' ';
+                    confirm = '     ';
                 }
                 getchar();
                 confirm = tolower(confirm);
 
                 if (confirm != 'y' && confirm != 'n')
-                    printf("\t\t\tInvalid input!  Please enter 'y' or 'n'.\n");
+                    printf("\n\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
             }
             while (confirm != 'y' && confirm != 'n');
 
@@ -994,7 +994,8 @@ void simulateScheduler()
         case 3:
         {
             displayQueue(&taskQueue);
-            printf("\n\n\t\t\t\tPress Enter to continue...");
+
+            printf("\n\n\t\t\t\t\tPress Enter to continue...");
             getchar();
             break;
         }
