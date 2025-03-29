@@ -1058,7 +1058,7 @@ void simulateScheduler()
                 "\t\t\t    T     H   H  A   A  N   N  K   K       Y     OOO    UUU\n";
 
 
-            printf("%s\n", lines);
+            printf(""BHCYN"%s\n"reset"", lines);
 
             Sleep(4000);
             return;
