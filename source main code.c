@@ -897,6 +897,7 @@ void simulateScheduler()
                 printf("%c", 201);
                 for(int i = 0; i < 60; i++) printf("%c", 205);
                 printf("%c\n", 187);
+                printf("%c\n", 187);
 
                 gotoxy(30, yPos++);
                 printf("%c"BHCYN"                       PROCESSING TASK                      "reset"%c\n", 186, 186);
