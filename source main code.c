@@ -384,7 +384,7 @@ void displayQueue(PriorityQueue* q)
                VLINE, DESC_WIDTH-1,displayDesc,
                VLINE, PRIO_WIDTH-1,current->task.priority,
                VLINE, TIME_WIDTH-1,  timeBuf,
-               VLINE, STATUS_WIDTH-1,   "Pending",
+               VLINE, STATUS_WIDTH-1,   YEL"    Pending  "reset,
                VLINE);
 
         // Add row separator if not last item
