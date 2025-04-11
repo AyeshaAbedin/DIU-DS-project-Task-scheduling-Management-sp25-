@@ -563,9 +563,14 @@ void removeTask(PriorityQueue* q)
     if (isEmpty(q))
     {
 
-        printf("\n\n\n\n\t\t\t\t"RED"Queue is empty! No tasks to remove."reset"\n");
+        printf("\n\n\n\n\t\t\t\t\t"RED"Queue is empty! No tasks to remove."reset"\n");
 
-        printf("\n\t\t\t\t"GRN"Press Enter to continue..."reset);
+        printf("\n\n\t\t\t\t\t   "GRN"Press Enter to continue "reset);
+        for(int i=0;i<3;i++)
+        {
+            printf(".");
+            sleep(1);
+        }
         getchar();
         return;
     }
