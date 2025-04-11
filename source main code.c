@@ -61,6 +61,18 @@ void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 void removeTask(PriorityQueue* q);
 void loadingBar();
+
+int main()
+{
+    // First show the logo
+    clearScreen();
+    displayLogo();
+    loadingAnimation();
+
+    simulateScheduler();
+    return 0;
+}
+
 void gotoxy(int x, int y)
 {
     COORD coord;
@@ -89,12 +101,12 @@ void loadingBar()
 
     char a = 196, b = 219;
     printf("\n\t\t\t\t\t");
-     for (int i = 0; i < 26; i++)
+    for (int i = 0; i < 26; i++)
         printf("%c",a);
     printf("\r\t\t\t\t\t");
     for (int i = 0; i < 26; i++)
     {
-        printf(""BHCYN"%c"reset"" , b );
+        printf(""BHCYN"%c"reset"", b );
         Sleep(80);
     }
     printf("\n");
@@ -126,54 +138,191 @@ void clearScreen()
 #endif
 }
 
-int main()
-{
-    // First show the logo
-    clearScreen();
-    displayLogo();
-
-    simulateScheduler();
-    return 0;
-}
-
 void showMenu()
 {
-  system("cls");
-printf("\n");
-printf("\n\n\n");
-printf("\t\t\t\t  %c", 201);
-for (int i = 0; i < 60; i++)
-    printf("%c", 205);
-printf("%c\n", 187);
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
-printf("\t\t\t\t  %c"BHCYN "                TASK SCHEDULING SYSTEM                "reset"      %c\n", 186, 186);
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
-printf("\t\t\t\t  %c", 204);
-for (int i = 0; i < 60; i++)
-    printf("%c", 205);
-printf("%c\n", 185);
+    system("cls");
+    printf("\n");
+    printf("\n\n\n");
+    printf("\t\t\t\t  %c", 201);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 187);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c"BHCYN "                TASK SCHEDULING SYSTEM                "reset"      %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c", 204);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 185);
 
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
-printf("\t\t\t\t  %c    1. Add new task                                         %c\n", 186, 186);
-printf("\t\t\t\t  %c    2. Process next task                                    %c\n", 186, 186);
-printf("\t\t\t\t  %c    3. View current queue                                   %c\n", 186, 186);
-printf("\t\t\t\t  %c    4. Generate report                                      %c\n", 186, 186);
-printf("\t\t\t\t  %c    5. Remove task                                          %c\n", 186, 186);
-printf("\t\t\t\t  %c    6. Exit                                                 %c\n", 186, 186);
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
-printf("\t\t\t\t  %c   "BHCYN"  Enter your choice:                                "reset"     %c\n", 186, 186);
-printf("\t\t\t\t  %c                                                            %c\n", 186, 186);  // Added extra line
-printf("\t\t\t\t  %c", 200);
-for (int i = 0; i < 60; i++)
-    printf("%c", 205);
-printf("%c\n", 188);
-gotoxy(40, 21);  // Changed from 18 to 21 to account for extra lines
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c    1. Add new task                                         %c\n", 186, 186);
+    printf("\t\t\t\t  %c    2. Process next task                                    %c\n", 186, 186);
+    printf("\t\t\t\t  %c    3. View current queue                                   %c\n", 186, 186);
+    printf("\t\t\t\t  %c    4. Generate report                                      %c\n", 186, 186);
+    printf("\t\t\t\t  %c    5. Remove task                                          %c\n", 186, 186);
+    printf("\t\t\t\t  %c    6. Exit                                                 %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c   "BHCYN"  Enter your choice:                                "reset"     %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);  // Added extra line
+    printf("\t\t\t\t  %c", 200);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 188);
+    gotoxy(40, 21);  // Changed from 18 to 21 to account for extra lines
 
 
 
 }
 
+
+void drawBox(int x, int y, int width, int height)
+{
+    gotoxy(x, y);
+    printf("%c", 201);
+
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 205);
+
+    printf("%c", 187);
+
+    for (int i = 0; i < height - 2; i++)
+    {
+        gotoxy(x, y + i + 1);
+        printf("%c", 186);
+        gotoxy(x + width - 1, y + i + 1);
+        printf("%c", 186);
+    }
+
+    gotoxy(x, y + height - 1);
+    printf("%c", 200);
+
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 205);
+
+    printf("%c", 188);
+}
+
+//Function to draw a thin box
+void thinbox(int x, int y, int width, int height)
+{
+    gotoxy(x, y);
+    printf("%c", 218);
+
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 196);
+
+    printf("%c", 191);
+
+    for (int i = 0; i < height - 2; i++)
+    {
+        gotoxy(x, y + i + 1);
+        printf("%c", 179);
+        gotoxy(x + width - 1, y + i + 1);
+        printf("%c", 179);
+    }
+
+    gotoxy(x, y + height - 1);
+    printf("%c", 192);
+
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 196);
+
+    printf("%c", 217);
+}
+
+// Function to draw the main box
+void mainbox()
+{
+
+    drawBox(10, 2, 100, 26);
+    gotoxy(50, 5);
+    printf(BHCYN "TASK MANAGEMENT SYSTEM" reset);
+    gotoxy(45, 6);
+    printf("================================");
+}
+void loadingAnimation()
+{
+    system("cls");
+
+    mainbox();
+
+    thinbox(40, 16, 40, 3);
+    gotoxy(41, 15);
+    printf(BHWHT "Password" reset);
+
+    char passInput[32];
+    char ch;
+    int i = 0;
+    gotoxy(43, 17);
+
+    while (1)
+    {
+        ch = getch();
+        if (ch == 13)
+        {
+            passInput[i] = '\0';
+            break;
+        }
+        else if (ch == 8)
+        {
+            if (i > 0)
+            {
+                i--;
+                printf("\b \b");
+            }
+        }
+        else
+        {
+            passInput[i] = ch;
+            i++;
+            printf("*");
+        }
+    }
+
+    while (strcmp(passInput, "12345") != 0)
+    {
+        gotoxy(40, 20);
+        printf(RED "Wrong password. Try again!" reset);
+        gotoxy(43, 17);
+        printf("                    ");
+        gotoxy(43, 17);
+
+        i = 0;
+        while (1)
+        {
+            ch = getch();
+            if (ch == 13)
+            {
+                passInput[i] = '\0';
+                break;
+            }
+            else if (ch == 8)
+            {
+                if (i > 0)
+                {
+                    i--;
+                    printf("\b \b");
+                }
+            }
+            else
+            {
+                passInput[i] = ch;
+                i++;
+                printf("*");
+            }
+        }
+
+
+        system("cls");
+
+    }
+
+    gotoxy(58, 20);
+    printf(BGRN "Ready!" reset);
+    Sleep(500);
+}
 void initializeQueue(PriorityQueue* q)
 {
     q->front = NULL;
@@ -279,7 +428,8 @@ void enqueue(PriorityQueue* q, Task newTask)
 Task dequeue(PriorityQueue* q)
 {
     if (isEmpty(q))
-    {  gotoxy(45,5);
+    {
+        gotoxy(45,5);
         printf("\t\t\t\tQueue is empty!\n");
         getchar();
     }
@@ -295,7 +445,8 @@ void displayQueue(PriorityQueue* q)
 {
     clearScreen();
     if(isEmpty(q))
-    {   gotoxy(45,5);
+    {
+        gotoxy(45,5);
         printf("Queue is empty!\n");
 
         return;
@@ -314,7 +465,7 @@ void displayQueue(PriorityQueue* q)
 #define reset "\033[0m"
 
     printf(BHCYN"\n\t\t\t\t\t   Current Task Queue \n"reset);
-   gotoxy( 0,3);
+    gotoxy( 0,3);
     // Top border
     printf("%c", 201);
     for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
@@ -361,11 +512,11 @@ void displayQueue(PriorityQueue* q)
 
     while(current != NULL)
     {
-        // Format time
+
         strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M",
                  localtime(&current->task.arrival_time));
 
-        // Truncate description if needed
+
         char displayDesc[DESC_WIDTH+1];
         strncpy(displayDesc, current->task.description, DESC_WIDTH);
         displayDesc[DESC_WIDTH] = '\0';
@@ -378,13 +529,13 @@ void displayQueue(PriorityQueue* q)
 
 #define VLINE 186
 
-        printf("%c%  -  *d %c% -  *d %c%  -*s %c% -*d %c% -*s %c% -*s %c\n",
+        printf("%c%  -  *d %c%-*d %c\t   %-*s %c% -*d %c% -*s %c% -*s %c\n",
                VLINE, SNO_WIDTH-1,  serial++,
                VLINE, TASKID_WIDTH-1,current->task.id,
-               VLINE, DESC_WIDTH-1,displayDesc,
+               VLINE, DESC_WIDTH-9,displayDesc,
                VLINE, PRIO_WIDTH-1,current->task.priority,
                VLINE, TIME_WIDTH-1,  timeBuf,
-               VLINE, STATUS_WIDTH-1,   YEL"    Pending  "reset,
+               VLINE, STATUS_WIDTH-1,   YEL"   Pending   "reset,
                VLINE);
 
         // Add row separator if not last item
@@ -438,12 +589,12 @@ void generateReport(ProcessedTasksList* processed)
     }
 
     // Column width definitions
-    #define ID_WIDTH 6
-    #define PRIO_WIDTH 9
-    #define WAIT_WIDTH 11
-    #define PROC_WIDTH 16
-    #define DESC_WIDTH 24
-    #define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
+#define ID_WIDTH 6
+#define PRIO_WIDTH 9
+#define WAIT_WIDTH 11
+#define PROC_WIDTH 16
+#define DESC_WIDTH 24
+#define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
 
     // Top border
 
@@ -453,7 +604,7 @@ void generateReport(ProcessedTasksList* processed)
     printf(BHCYN"=== TASK SCHEDULING REPORT ==="reset);
 
 
-     gotoxy(7,5);
+    gotoxy(7,5);
 
     printf("\t\t\t  %c", 201);
     for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
@@ -463,7 +614,8 @@ void generateReport(ProcessedTasksList* processed)
            186, TOTAL_WIDTH-29, processed->size, 186);
 
     double totalWait = 0, totalProc = 0;
-    for(int i=0; i<processed->size; i++) {
+    for(int i=0; i<processed->size; i++)
+    {
         totalWait += processed->tasks[i].wait_time;
         totalProc += processed->tasks[i].processing_time;
     }
@@ -493,7 +645,8 @@ void generateReport(ProcessedTasksList* processed)
     printf("%c\n", 185);
 
     // Task rows
-    for(int i=0; i<processed->size; i++) {
+    for(int i=0; i<processed->size; i++)
+    {
         Task t = processed->tasks[i];
         printf("\t\t\t  %c  %-*d  \t%-*d        %-*.2f     \t%-*.2f           \t %-*s  %c\n", 186,
                ID_WIDTH-2, t.id,
@@ -566,7 +719,7 @@ void removeTask(PriorityQueue* q)
         printf("\n\n\n\n\t\t\t\t\t"RED"Queue is empty! No tasks to remove."reset"\n");
 
         printf("\n\n\t\t\t\t\t   "GRN"Press Enter to continue "reset);
-        for(int i=0;i<3;i++)
+        for(int i=0; i<3; i++)
         {
             printf(".");
             sleep(1);
@@ -585,7 +738,7 @@ void removeTask(PriorityQueue* q)
 removal_start:
     gotoxy(45,3);
     printf(""BHCYN"\t      == Remove Task ==\n"reset"");
-   gotoxy(28,5);
+    gotoxy(28,5);
     for (int i = 0; i < 33; i++)
     {
         printf("%c", 205);
@@ -601,7 +754,7 @@ removal_start:
 
     while (scanf("%d", &choice) != 1 || (choice != 1 && choice != 2))
     {
-         printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 1"reset" or "BWHT"2"reset" \n");
+        printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 1"reset" or "BWHT"2"reset" \n");
         while (getchar() != '\n');
     }
     getchar();
@@ -631,7 +784,7 @@ removal_start:
 
                 while (1)
                 {
-                   printf("\n\t\t\t\tAre you sure you want to remove this task? ("GRN"y"reset"/"RED"n"reset"): ");
+                    printf("\n\t\t\t\tAre you sure you want to remove this task? ("GRN"y"reset"/"RED"n"reset"): ");
                     scanf(" %c", &confirm);
                     getchar();
                     confirm = tolower(confirm);
@@ -672,7 +825,7 @@ removal_start:
             printf("\n\t\t\t\tNo task found with ID %d.\n", taskId);
             do
             {
-                 printf("\n\t\n\t\t\t\t"GRN"Do you want to try again? (y/n): "reset);
+                printf("\n\t\n\t\t\t\t"GRN"Do you want to try again? (y/n): "reset);
                 if (scanf(" %c", &confirm) != 1)
                 {
                     while (getchar() != '\n');
@@ -682,7 +835,7 @@ removal_start:
                 confirm = tolower(confirm);
 
                 if (confirm != 'y' && confirm != 'n')
-                     printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 'y'"reset" or "BWHT"'n'"reset" \n");
+                    printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 'y'"reset" or "BWHT"'n'"reset" \n");
             }
             while (confirm != 'y' && confirm != 'n');
 
@@ -757,7 +910,7 @@ removal_start:
             current = current->next;
         }
 
-       if (!found)
+        if (!found)
         {
             printf("\n\t\t\t\tNo task found with Name %s\n", taskDesc);
             do
@@ -821,22 +974,22 @@ void simulateScheduler()
             while (getchar() != '\n');
         }
         getchar();
-         switch (choice)
+        switch (choice)
         {
         case 1:
         {
             clearScreen();
             gotoxy(45,2);
             printf("    Add New Task \n");
-   gotoxy(20,4);
-    for (int i = 0; i < 33; i++)
-    {
-        printf(""BHCYN"%c"reset"", 205);
-    }
+            gotoxy(20,4);
+            for (int i = 0; i < 33; i++)
+            {
+                printf(""BHCYN"%c"reset"", 205);
+            }
 
-    printf(" %c ", 111);
-    for (int i = 0; i < 33; i++)
-        printf(""BHCYN"%c"reset"", 205);
+            printf(" %c ", 111);
+            for (int i = 0; i < 33; i++)
+                printf(""BHCYN"%c"reset"", 205);
             Task newTask;
             newTask.processing_time = 0.0;
             gotoxy(40, 6);
@@ -858,7 +1011,7 @@ void simulateScheduler()
                 else
                 {
 
-                    printf("\t\t\t\t"RED"Invalid ID! Please enter a number: "reset);
+                    printf("\t\t\t\t\t"RED"Invalid ID! Please enter a number: "reset);
                     while (getchar() != '\n');
                 }
             }
@@ -886,7 +1039,7 @@ void simulateScheduler()
             getchar();
             break;
         }
-         case 2:
+        case 2:
         {
             clearScreen();
             if (isEmpty(&taskQueue))
@@ -902,8 +1055,6 @@ void simulateScheduler()
                 printf("%c", 201);
                 for(int i = 0; i < 60; i++) printf("%c", 205);
                 printf("%c\n", 187);
-                printf("%c\n", 187);
-
                 gotoxy(30, yPos++);
                 printf("%c"BHCYN"                       PROCESSING TASK                      "reset"%c\n", 186, 186);
 
@@ -974,7 +1125,7 @@ void simulateScheduler()
                 addToProcessedList(&processedTasks, currentTask);
                 saveTasksToFile(&processedTasks);
             }
-            gotoxy(42,11);
+            gotoxy(42,18);
             printf("\n\n\t\t\t\t\t  "GRN"Press Enter to continue..."reset);
             getchar();
             break;
@@ -1050,7 +1201,7 @@ void simulateScheduler()
 
             Sleep(4000);
             return;
-            }
+        }
         }
     }
 }
