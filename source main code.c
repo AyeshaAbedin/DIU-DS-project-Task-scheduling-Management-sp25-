@@ -969,8 +969,8 @@ void simulateScheduler()
                 addToProcessedList(&processedTasks, currentTask);
                 saveTasksToFile(&processedTasks);
             }
-            gotoxy(25,18);
-            printf("\n\n\t\t\t\t"GRN"Press Enter to continue..."reset);
+            gotoxy(42,11);
+            printf("\n\n\t\t\t\t\t  "GRN"Press Enter to continue..."reset);
             getchar();
             break;
         }
