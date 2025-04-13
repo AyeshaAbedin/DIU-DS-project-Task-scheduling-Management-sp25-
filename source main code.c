@@ -460,9 +460,6 @@ void displayQueue(PriorityQueue* q)
 #define TIME_WIDTH   19
 #define STATUS_WIDTH 14
 
-    // Color definitions (if needed)
-#define BGRN "\033[1;32m"
-#define reset "\033[0m"
 
     printf(BHCYN"\n\t\t\t\t\t   Current Task Queue \n"reset);
     gotoxy( 0,3);
@@ -529,12 +526,12 @@ void displayQueue(PriorityQueue* q)
 
 #define VLINE 186
 
-        printf("%c%  -  *d %c%-*d %c\t   %-*s %c% -*d %c% -*s %c% -*s %c\n",
-               VLINE, SNO_WIDTH-1,  serial++,
-               VLINE, TASKID_WIDTH-1,current->task.id,
-               VLINE, DESC_WIDTH-9,displayDesc,
-               VLINE, PRIO_WIDTH-1,current->task.priority,
-               VLINE, TIME_WIDTH-1,  timeBuf,
+        printf("%c %-*d %c %-*d %c\t      %-*s %c   %-*d %c  %-*s %c% -*s %c\n",
+               VLINE, SNO_WIDTH-2,  serial++,
+               VLINE, TASKID_WIDTH-2,current->task.id,
+               VLINE, DESC_WIDTH-12,displayDesc,
+               VLINE, PRIO_WIDTH-4,current->task.priority,
+               VLINE, TIME_WIDTH-3,  timeBuf,
                VLINE, STATUS_WIDTH-1,   YEL"   Pending   "reset,
                VLINE);
 
@@ -596,9 +593,7 @@ void generateReport(ProcessedTasksList* processed)
 #define DESC_WIDTH 24
 #define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
 
-    // Top border
 
-    // Title
 
     gotoxy(45, 3);
     printf(BHCYN"=== TASK SCHEDULING REPORT ==="reset);
@@ -976,7 +971,7 @@ void simulateScheduler()
         getchar();
         switch (choice)
         {
-        case 1:
+case 1:
         {
             clearScreen();
             gotoxy(45,2);
@@ -1005,7 +1000,7 @@ void simulateScheduler()
                     else
                     {
 
-                        printf("\t\t\t\t\tID "RED"already exists! Please enter a unique ID: "reset);
+                        printf("\n\t\t\t\t"RED"ID already exists! Please enter a unique ID: "reset);
                     }
                 }
                 else
@@ -1039,7 +1034,7 @@ void simulateScheduler()
             getchar();
             break;
         }
-        case 2:
+case 2:
         {
             clearScreen();
             if (isEmpty(&taskQueue))

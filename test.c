@@ -5,12 +5,12 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <windows.h> // for Sleep and cls
-#include<conio.h>
-#include"colour.h"
+#include <conio.h>
+#include "colour.h"
+
 #define DATA_FILE "task_records.dat"
 
-typedef struct
-{
+typedef struct {
     int id;
     char description[100];
     int priority;
@@ -21,20 +21,17 @@ typedef struct
     double processing_time;
 } Task;
 
-typedef struct Node
-{
+typedef struct Node {
     Task task;
     struct Node* next;
 } Node;
 
-typedef struct
-{
+typedef struct {
     Node* front;
     int size;
 } PriorityQueue;
 
-typedef struct
-{
+typedef struct {
     Task* tasks;
     int size;
     int capacity;
@@ -61,19 +58,27 @@ void loadTasksFromFile(ProcessedTasksList* list);
 int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id);
 void removeTask(PriorityQueue* q);
 void loadingBar();
-void gotoxy(int x, int y)
-{
+
+int main() {
+    // First show the logo
+    clearScreen();
+    displayLogo();
+    loadingAnimation();
+
+    simulateScheduler();
+    return 0;
+}
+
+void gotoxy(int x, int y) {
     COORD coord;
     coord.X = x;
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
-void displayLogo()
-{
+
+void displayLogo() {
     printf("\n\n\n");
-
-
-    printf("\t\t\t"BHCYN    " __________            _      _____         _                    _\n");
+    printf("\t\t\t"BHCYN" __________            _      _____         _                    _\n");
     printf("\t\t\t|          |          | |    //____|       | |                  | |\n");
     printf("\t\t\t ---| | ---           | |    ||            | |                  | |\n");
     printf("\t\t\t    | |   ____  _____ | | // ||___    ____ | |___   _____    ___| |\n");
@@ -83,31 +88,27 @@ void displayLogo()
     printf("\n");
     loadingBar();
 }
-void loadingBar()
-{
-    printf("\n\n\n\t\t\t\t\t\t Loading:-\n ");
 
+void loadingBar() {
+    printf("\n\n\n\t\t\t\t\t\t Loading:-\n ");
     char a = 196, b = 219;
     printf("\n\t\t\t\t\t");
-     for (int i = 0; i < 26; i++)
-        printf("%c",a);
-    printf("\r\t\t\t\t\t");
     for (int i = 0; i < 26; i++)
-    {
-        printf(""BHCYN"%c"reset"" , b );
+        printf("%c", a);
+    printf("\r\t\t\t\t\t");
+    for (int i = 0; i < 26; i++) {
+        printf(""BHCYN"%c"reset"", b);
         Sleep(80);
     }
     printf("\n");
 }
 
-void showLoadingScreen()
-{
+void showLoadingScreen() {
     clearScreen();
     printf("\n\nLoading Task Scheduler");
     fflush(stdout);
 
-    for (int i = 0; i < 3; i++)
-    {
+    for (int i = 0; i < 3; i++) {
         sleep(1);
         printf(".");
         fflush(stdout);
@@ -117,8 +118,7 @@ void showLoadingScreen()
     clearScreen();
 }
 
-void clearScreen()
-{
+void clearScreen() {
 #ifdef _WIN32
     system("cls");
 #else
@@ -126,168 +126,218 @@ void clearScreen()
 #endif
 }
 
-int main()
-{
-    // First show the logo
-    clearScreen();
-    displayLogo();
-    //printf("\nPress Enter to start...");
-    //getchar();
+void showMenu() {
+    system("cls");
+    printf("\n");
+    printf("\n\n\n");
+    printf("\t\t\t\t  %c", 201);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 187);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c"BHCYN"                TASK SCHEDULING SYSTEM                "reset"      %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c", 204);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 185);
 
-    // Then show loading screen
-    //showLoadingScreen();
-
-    // Finally start the scheduler
-    simulateScheduler();
-    return 0;
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c    1. Add new task                                         %c\n", 186, 186);
+    printf("\t\t\t\t  %c    2. Process next task                                    %c\n", 186, 186);
+    printf("\t\t\t\t  %c    3. View current queue                                   %c\n", 186, 186);
+    printf("\t\t\t\t  %c    4. Generate report                                      %c\n", 186, 186);
+    printf("\t\t\t\t  %c    5. Remove task                                          %c\n", 186, 186);
+    printf("\t\t\t\t  %c    6. Exit                                                 %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c   "BHCYN"  Enter your choice:                                "reset"     %c\n", 186, 186);
+    printf("\t\t\t\t  %c                                                            %c\n", 186, 186);
+    printf("\t\t\t\t  %c", 200);
+    for (int i = 0; i < 60; i++)
+        printf("%c", 205);
+    printf("%c\n", 188);
+    gotoxy(40, 21);
 }
 
-void showMenu()
-{
-   system("cls");
-        printf("\n");
-        printf("\n\n\n");
-        printf("\t\t\t\t  %c", 201);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 187);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf( "  \t\t\t\t  %c"BHCYN "         TASK SCHEDULING SYSTEM"reset"             %c\n", 186,
-                186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c", 204);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 185);
-
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    1. Add new task                         %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    2. Process next task                    %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    3. View current queue                   %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    4. Generate report                      %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    5. Remove task                          %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c    6. Exit                                 %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c                                            %c\n", 186,
-               186);
-        printf("\t\t\t\t  %c", 200);
-        for (int i = 0; i < 44; i++)
-            printf("%c", 205);
-        printf("%c\n", 188);
-        gotoxy(40, 18);
-
-        printf(" Enter your choice: ");
-        //scanf("%d", &choice);
+void drawBox(int x, int y, int width, int height) {
+    gotoxy(x, y);
+    printf("%c", 201);
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 205);
+    printf("%c", 187);
+    for (int i = 0; i < height - 2; i++) {
+        gotoxy(x, y + i + 1);
+        printf("%c", 186);
+        gotoxy(x + width - 1, y + i + 1);
+        printf("%c", 186);
+    }
+    gotoxy(x, y + height - 1);
+    printf("%c", 200);
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 205);
+    printf("%c", 188);
 }
 
-void initializeQueue(PriorityQueue* q)
-{
+void thinbox(int x, int y, int width, int height) {
+    gotoxy(x, y);
+    printf("%c", 218);
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 196);
+    printf("%c", 191);
+    for (int i = 0; i < height - 2; i++) {
+        gotoxy(x, y + i + 1);
+        printf("%c", 179);
+        gotoxy(x + width - 1, y + i + 1);
+        printf("%c", 179);
+    }
+    gotoxy(x, y + height - 1);
+    printf("%c", 192);
+    for (int i = 0; i < width - 2; i++)
+        printf("%c", 196);
+    printf("%c", 217);
+}
+
+void mainbox() {
+    drawBox(10, 2, 100, 26);
+    gotoxy(50, 5);
+    printf(BHCYN"TASK MANAGEMENT SYSTEM"reset);
+    gotoxy(45, 6);
+    printf("================================");
+}
+
+void loadingAnimation() {
+    system("cls");
+    mainbox();
+    thinbox(40, 16, 40, 3);
+    gotoxy(41, 15);
+    printf(BHWHT"Password"reset);
+
+    char passInput[32];
+    char ch;
+    int i = 0;
+    gotoxy(43, 17);
+
+    while (1) {
+        ch = getch();
+        if (ch == 13) {
+            passInput[i] = '\0';
+            break;
+        } else if (ch == 8) {
+            if (i > 0) {
+                i--;
+                printf("\b \b");
+            }
+        } else {
+            passInput[i] = ch;
+            i++;
+            printf("*");
+        }
+    }
+
+    while (strcmp(passInput, "12345") != 0) {
+        gotoxy(40, 20);
+        printf(RED"Wrong password. Try again!"reset);
+        gotoxy(43, 17);
+        printf("                    ");
+        gotoxy(43, 17);
+
+        i = 0;
+        while (1) {
+            ch = getch();
+            if (ch == 13) {
+                passInput[i] = '\0';
+                break;
+            } else if (ch == 8) {
+                if (i > 0) {
+                    i--;
+                    printf("\b \b");
+                }
+            } else {
+                passInput[i] = ch;
+                i++;
+                printf("*");
+            }
+        }
+        system("cls");
+    }
+
+    gotoxy(58, 20);
+    printf(BGRN"Ready!"reset);
+    Sleep(500);
+}
+
+void initializeQueue(PriorityQueue* q) {
     q->front = NULL;
     q->size = 0;
 }
 
-void initializeProcessedList(ProcessedTasksList* list)
-{
+void initializeProcessedList(ProcessedTasksList* list) {
     list->tasks = NULL;
     list->size = 0;
     list->capacity = 0;
 }
 
-int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id)
-{
-    for (int i = 0; i < list->size; i++)
-    {
-        if (list->tasks[i].id == id)
-        {
+int isIdUnique(ProcessedTasksList* list, PriorityQueue* q, int id) {
+    for (int i = 0; i < list->size; i++) {
+        if (list->tasks[i].id == id) {
             return 0;
         }
     }
-
     Node* current = q->front;
-    while (current != NULL)
-    {
-        if (current->task.id == id)
-        {
+    while (current != NULL) {
+        if (current->task.id == id) {
             return 0;
         }
         current = current->next;
     }
-
     return 1;
 }
 
-void addToProcessedList(ProcessedTasksList* list, Task task)
-{
-    if (list->size >= list->capacity)
-    {
+void addToProcessedList(ProcessedTasksList* list, Task task) {
+    if (list->size >= list->capacity) {
         list->capacity = list->capacity == 0 ? 1 : list->capacity * 2;
         list->tasks = realloc(list->tasks, list->capacity * sizeof(Task));
-        if (!list->tasks)
-        {
-            perror("Failed to allocate memory");
+        if (!list->tasks) {
+            perror(""RED"Failed to allocate memory"reset);
             exit(EXIT_FAILURE);
         }
     }
     list->tasks[list->size++] = task;
 }
 
-void freeProcessedList(ProcessedTasksList* list)
-{
+void freeProcessedList(ProcessedTasksList* list) {
     free(list->tasks);
     list->tasks = NULL;
     list->size = 0;
     list->capacity = 0;
 }
 
-void freeQueue(PriorityQueue* q)
-{
-    while (!isEmpty(q))
-    {
+void freeQueue(PriorityQueue* q) {
+    while (!isEmpty(q)) {
         dequeue(q);
     }
 }
 
-int isEmpty(PriorityQueue* q)
-{
+int isEmpty(PriorityQueue* q) {
     return q->front == NULL;
 }
 
-void enqueue(PriorityQueue* q, Task newTask)
-{
+void enqueue(PriorityQueue* q, Task newTask) {
     Node* newNode = (Node*)malloc(sizeof(Node));
-    if (!newNode)
-    {
+    if (!newNode) {
         perror("Failed to allocate memory");
         exit(EXIT_FAILURE);
     }
-
     newNode->task = newTask;
     newNode->next = NULL;
 
-    if (isEmpty(q) || newTask.priority > q->front->task.priority)
-    {
+    if (isEmpty(q) || newTask.priority > q->front->task.priority) {
         newNode->next = q->front;
         q->front = newNode;
-    }
-    else
-    {
+    } else {
         Node* current = q->front;
-        while (current->next != NULL && current->next->task.priority >= newTask.priority)
-        {
+        while (current->next != NULL && current->next->task.priority >= newTask.priority) {
             current = current->next;
         }
         newNode->next = current->next;
@@ -296,12 +346,11 @@ void enqueue(PriorityQueue* q, Task newTask)
     q->size++;
 }
 
-Task dequeue(PriorityQueue* q)
-{
-    if (isEmpty(q))
-    {
+Task dequeue(PriorityQueue* q) {
+    if (isEmpty(q)) {
+        gotoxy(45, 5);
         printf("\t\t\t\tQueue is empty!\n");
-        exit(EXIT_FAILURE);
+        getchar();
     }
     Node* temp = q->front;
     Task task = temp->task;
@@ -311,117 +360,109 @@ Task dequeue(PriorityQueue* q)
     return task;
 }
 
-void displayQueue(PriorityQueue* q)
-{
+void displayQueue(PriorityQueue* q) {
     clearScreen();
-    if(isEmpty(q))
-    {
+    if (isEmpty(q)) {
+        gotoxy(45, 5);
         printf("Queue is empty!\n");
-        Sleep(2000);
         return;
     }
 
     // Column width definitions
-#define SNO_WIDTH    7
-#define TASKID_WIDTH 9
-#define DESC_WIDTH   35
-#define PRIO_WIDTH   10
-#define TIME_WIDTH   19
-#define STATUS_WIDTH 14
+    #define SNO_WIDTH    7
+    #define TASKID_WIDTH 9
+    #define DESC_WIDTH   35
+    #define PRIO_WIDTH   10
+    #define TIME_WIDTH   19
+    #define STATUS_WIDTH 14
 
     // Color definitions (if needed)
-#define BGRN "\033[1;32m"
-#define reset "\033[0m"
+    #define BGRN "\033[1;32m"
+    #define reset "\033[0m"
 
-    printf(BGRN"\n\t\t\t   Current Task Queue \n"reset);
-
+    printf(BHCYN"\n\t\t\t\t\t   Current Task Queue \n"reset);
+    gotoxy(0, 3);
     // Top border
     printf("%c", 201);
-    for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < SNO_WIDTH; i++) printf("%c", 205);
     printf("%c", 203);
-    for(int i=0; i<TASKID_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TASKID_WIDTH; i++) printf("%c", 205);
     printf("%c", 203);
-    for(int i=0; i<DESC_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < DESC_WIDTH; i++) printf("%c", 205);
     printf("%c", 203);
-    for(int i=0; i<PRIO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < PRIO_WIDTH; i++) printf("%c", 205);
     printf("%c", 203);
-    for(int i=0; i<TIME_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TIME_WIDTH; i++) printf("%c", 205);
     printf("%c", 203);
-    for(int i=0; i<STATUS_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < STATUS_WIDTH; i++) printf("%c", 205);
     printf("%c\n", 187);
 
     // Header row
     printf("%c%-*s %c%-*s %c%-*s %c%-*s %c%-*s %c%-*s %c\n",
-           186, SNO_WIDTH-1, "S.No",
-           186, TASKID_WIDTH-1, "Task ID",
-           186, DESC_WIDTH-1, "Description",
-           186, PRIO_WIDTH-1, "Priority",
-           186, TIME_WIDTH-1, "Arrival Time",
-           186, STATUS_WIDTH-1, "Status",
+           186, SNO_WIDTH - 1, ""BHCYN" S.No "reset,
+           186, TASKID_WIDTH - 1, ""BHCYN" Task ID"reset,
+           186, DESC_WIDTH - 1, ""BHCYN"            Description           "reset,
+           186, PRIO_WIDTH - 1, ""BHCYN" Priority"reset,
+           186, TIME_WIDTH - 1, ""BHCYN"   Arrival Time   "reset,
+           186, STATUS_WIDTH - 1, ""BHCYN"   Status    "reset,
            186);
 
     // Header separator
     printf("%c", 204);
-    for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < SNO_WIDTH; i++) printf("%c", 205);
     printf("%c", 206);
-    for(int i=0; i<TASKID_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TASKID_WIDTH; i++) printf("%c", 205);
     printf("%c", 206);
-    for(int i=0; i<DESC_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < DESC_WIDTH; i++) printf("%c", 205);
     printf("%c", 206);
-    for(int i=0; i<PRIO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < PRIO_WIDTH; i++) printf("%c", 205);
     printf("%c", 206);
-    for(int i=0; i<TIME_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TIME_WIDTH; i++) printf("%c", 205);
     printf("%c", 206);
-    for(int i=0; i<STATUS_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < STATUS_WIDTH; i++) printf("%c", 205);
     printf("%c\n", 185);
 
     Node* current = q->front;
     int serial = 1;
     char timeBuf[20];
 
-    while(current != NULL)
-    {
-        // Format time
-        strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M",
-                 localtime(&current->task.arrival_time));
+    while (current != NULL) {
+        strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M", localtime(&current->task.arrival_time));
 
-        // Truncate description if needed
-        char displayDesc[DESC_WIDTH+1];
+        char displayDesc[DESC_WIDTH + 1];
         strncpy(displayDesc, current->task.description, DESC_WIDTH);
         displayDesc[DESC_WIDTH] = '\0';
-        if(strlen(current->task.description) > DESC_WIDTH)
-        {
-            displayDesc[DESC_WIDTH-3] = '.';
-            displayDesc[DESC_WIDTH-2] = '.';
-            displayDesc[DESC_WIDTH-1] = '.';
+        if (strlen(current->task.description) > DESC_WIDTH) {
+            displayDesc[DESC_WIDTH - 3] = '.';
+            displayDesc[DESC_WIDTH - 2] = '.';
+            displayDesc[DESC_WIDTH - 1] = '.';
         }
 
-#define VLINE 186
+        #define VLINE 186
 
-        printf("%c%-*d %c%-*d %c%-*s %c%-*d %c%-*s %c%-*s %c\n",
-               VLINE, SNO_WIDTH-1, serial++,
-               VLINE, TASKID_WIDTH-1, current->task.id,
-               VLINE, DESC_WIDTH-1, displayDesc,
-               VLINE, PRIO_WIDTH-1, current->task.priority,
-               VLINE, TIME_WIDTH-1, timeBuf,
-               VLINE, STATUS_WIDTH-1, "Pending",
+        printf("%c%  -  *d %c%-*d %c\t   %-*s %c% -*d %c% -*s %c% -*s %c\n",
+               VLINE, SNO_WIDTH - 1, serial++,
+               VLINE, TASKID_WIDTH - 1, current->task.id,
+               VLINE, DESC_WIDTH - 9, displayDesc,
+               VLINE, PRIO_WIDTH - 1, current->task.priority,
+               VLINE, TIME_WIDTH - 1, timeBuf,
+               VLINE, STATUS_WIDTH - 1,   YEL"   Pending   "reset,
                VLINE);
 
         // Add row separator if not last item
-        if(current->next != NULL)
-        {
+        if (current->next != NULL) {
             printf("%c", 204);
-            for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < SNO_WIDTH; i++) printf("%c", 205);
             printf("%c", 206);
-            for(int i=0; i<TASKID_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < TASKID_WIDTH; i++) printf("%c", 205);
             printf("%c", 206);
-            for(int i=0; i<DESC_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < DESC_WIDTH; i++) printf("%c", 205);
             printf("%c", 206);
-            for(int i=0; i<PRIO_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < PRIO_WIDTH; i++) printf("%c", 205);
             printf("%c", 206);
-            for(int i=0; i<TIME_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < TIME_WIDTH; i++) printf("%c", 205);
             printf("%c", 206);
-            for(int i=0; i<STATUS_WIDTH; i++) printf("%c", 205);
+            for (int i = 0; i < STATUS_WIDTH; i++) printf("%c", 205);
             printf("%c\n", 185);
         }
 
@@ -430,30 +471,27 @@ void displayQueue(PriorityQueue* q)
 
     // Bottom border
     printf("%c", 200);
-    for(int i=0; i<SNO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < SNO_WIDTH; i++) printf("%c", 205);
     printf("%c", 202);
-    for(int i=0; i<TASKID_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TASKID_WIDTH; i++) printf("%c", 205);
     printf("%c", 202);
-    for(int i=0; i<DESC_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < DESC_WIDTH; i++) printf("%c", 205);
     printf("%c", 202);
-    for(int i=0; i<PRIO_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < PRIO_WIDTH; i++) printf("%c", 205);
     printf("%c", 202);
-    for(int i=0; i<TIME_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < TIME_WIDTH; i++) printf("%c", 205);
     printf("%c", 202);
-    for(int i=0; i<STATUS_WIDTH; i++) printf("%c", 205);
+    for (int i = 0; i < STATUS_WIDTH; i++) printf("%c", 205);
     printf("%c\n", 188);
-
-
-
 }
+
 getchar();
-void generateReport(ProcessedTasksList* processed)
-{
+
+void generateReport(ProcessedTasksList* processed) {
     clearScreen();
-    if (processed->size == 0)
-    {
-        gotoxy(45,5);
-        printf("No tasks were processed.\n");
+    if (processed->size == 0) {
+        gotoxy(45, 5);
+        printf(""RED"No tasks were processed.\n"reset);
         return;
     }
 
@@ -463,79 +501,68 @@ void generateReport(ProcessedTasksList* processed)
     #define WAIT_WIDTH 11
     #define PROC_WIDTH 16
     #define DESC_WIDTH 24
-    #define TOTAL_WIDTH (ID_WIDTH+PRIO_WIDTH+WAIT_WIDTH+PROC_WIDTH+DESC_WIDTH+13)
-
-    // Top border
+    #define TOTAL_WIDTH (ID_WIDTH + PRIO_WIDTH + WAIT_WIDTH + PROC_WIDTH + DESC_WIDTH + 13)
 
     // Title
-
     gotoxy(45, 3);
     printf(BHCYN"=== TASK SCHEDULING REPORT ==="reset);
-
-
-     gotoxy(7,5);
-
+    gotoxy(7, 5);
     printf("\t\t\t  %c", 201);
-    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) printf("%c", 205);
     printf("%c\n", 187);
 
     printf("\t\t\t  %c Total tasks processed    :%-*d%c\n",
-           186, TOTAL_WIDTH-29, processed->size, 186);
+           186, TOTAL_WIDTH - 29, processed->size, 186);
 
     double totalWait = 0, totalProc = 0;
-    for(int i=0; i<processed->size; i++) {
+    for (int i = 0; i < processed->size; i++) {
         totalWait += processed->tasks[i].wait_time;
         totalProc += processed->tasks[i].processing_time;
     }
-
     printf("\t\t\t  %c Average wait time        :%-*.2f %c\n",
-           186, TOTAL_WIDTH-30, totalWait/processed->size, 186);
+           186, TOTAL_WIDTH - 30, totalWait / processed->size, 186);
     printf("\t\t\t  %c Average processing time  :%-*.2f%c\n",
-           186, TOTAL_WIDTH-29, totalProc/processed->size, 186);
+           186, TOTAL_WIDTH - 29, totalProc / processed->size, 186);
 
-    // Table header separator
     printf("\t\t\t  %c", 204);
-    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) printf("%c", 205);
     printf("%c\n", 185);
 
     // Column headers
     printf("\t\t\t  %c"BHCYN, 186);
     printf("  %-*s    %-*s     %-*s     %-*s         %-*s  "reset"%c\n",
-           ID_WIDTH-2, "ID",
-           PRIO_WIDTH-4, "Priority",
-           WAIT_WIDTH-5, "Wait Time",
-           PROC_WIDTH-5, "Processing Time",
-           DESC_WIDTH-10, "Description", 186);
+           ID_WIDTH - 2, "ID",
+           PRIO_WIDTH - 4, "Priority",
+           WAIT_WIDTH - 5, "Wait Time",
+           PROC_WIDTH - 5, "Processing Time",
+           DESC_WIDTH - 10, "Description", 186);
 
     // Header separator
     printf("\t\t\t  %c", 204);
-    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) printf("%c", 205);
     printf("%c\n", 185);
 
     // Task rows
-    for(int i=0; i<processed->size; i++) {
+    for (int i = 0; i < processed->size; i++) {
         Task t = processed->tasks[i];
         printf("\t\t\t  %c  %-*d  \t%-*d        %-*.2f     \t%-*.2f           \t %-*s  %c\n", 186,
-               ID_WIDTH-2, t.id,
-               PRIO_WIDTH-6, t.priority,
-               WAIT_WIDTH-16, t.wait_time,
-               PROC_WIDTH-11, t.processing_time,
-               DESC_WIDTH-11, t.description, 186);
+               ID_WIDTH - 2, t.id,
+               PRIO_WIDTH - 6, t.priority,
+               WAIT_WIDTH - 16, t.wait_time,
+               PROC_WIDTH - 11, t.processing_time,
+               DESC_WIDTH - 11, t.description, 186);
     }
 
     // Bottom border
     printf("\t\t\t  %c", 200);
-    for(int i=0; i<TOTAL_WIDTH-2; i++) printf("%c", 205);
+    for (int i = 0; i < TOTAL_WIDTH - 2; i++) printf("%c", 205);
     printf("%c\n", 188);
-
 }
 
-void saveTasksToFile(ProcessedTasksList* list)
-{
+void saveTasksToFile(ProcessedTasksList* list) {
     FILE* file = fopen(DATA_FILE, "wb");
-    if (!file)
-    {
-        perror("Failed to save data");
+    if (!file) {
+        perror(""RED"Failed to save data"reset);
         return;
     }
 
@@ -544,28 +571,24 @@ void saveTasksToFile(ProcessedTasksList* list)
     fclose(file);
 }
 
-void loadTasksFromFile(ProcessedTasksList* list)
-{
+void loadTasksFromFile(ProcessedTasksList* list) {
     FILE* file = fopen(DATA_FILE, "rb");
     if (!file) return;
 
     int size;
-    if (fread(&size, sizeof(int), 1, file) != 1)
-    {
+    if (fread(&size, sizeof(int), 1, file) != 1) {
         fclose(file);
         return;
     }
 
     Task* tasks = malloc(size * sizeof(Task));
-    if (!tasks)
-    {
+    if (!tasks) {
         perror("Failed to allocate memory");
         fclose(file);
         return;
     }
 
-    if (fread(tasks, sizeof(Task), size, file) != size)
-    {
+    if (fread(tasks, sizeof(Task), size, file) != size) {
         free(tasks);
         fclose(file);
         return;
@@ -577,15 +600,15 @@ void loadTasksFromFile(ProcessedTasksList* list)
     fclose(file);
 }
 
-void removeTask(PriorityQueue* q)
-{
+void removeTask(PriorityQueue* q) {
     clearScreen();
-    if (isEmpty(q))
-    {
-
-        printf("\t\t\t\tQueue is empty! No tasks to remove.\n");
-
-        printf("\n\n\t\t\t\tPress Enter to continue...");
+    if (isEmpty(q)) {
+        printf("\n\n\n\n\t\t\t\t\t"RED"Queue is empty! No tasks to remove."reset"\n");
+        printf("\n\n\t\t\t\t\t   "GRN"Press Enter to continue "reset);
+        for (int i = 0; i < 3; i++) {
+            printf(".");
+            sleep(1);
+        }
         getchar();
         return;
     }
@@ -598,35 +621,31 @@ void removeTask(PriorityQueue* q)
     int found = 0;
 
 removal_start:
-    gotoxy(45,3);
-    printf(" Remove Task \n");
-
-    for (int i = 0; i < 33; i++)
-    {
+    gotoxy(45, 3);
+    printf(""BHCYN"\t      == Remove Task ==\n"reset"");
+    gotoxy(28, 5);
+    for (int i = 0; i < 33; i++) {
         printf("%c", 205);
     }
-
+    gotoxy(28 + 34, 5);
     printf(" %c ", 111);
     for (int i = 0; i < 33; i++)
         printf("%c", 205);
     printf("\n\n\n\t\t\t\tSearch by:\n");
     printf("\t\t\t\t1. Task ID\n");
-    printf("\t\t\t\t2. Task Name\n");
-    printf("\t\t\t\tEnter choice: ");
+    printf("\t\t\t\t2. Task Name\n\n\n");
+    printf("\t\t\t\tEnter choice:");
 
-    while (scanf("%d", &choice) != 1 || (choice != 1 && choice != 2))
-    {
-        printf("\n\n\n\t\t\t\tInvalid input! Please enter 1 or 2: ");
+    while (scanf("%d", &choice) != 1 || (choice != 1 && choice != 2)) {
+        printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 1"reset" or "BWHT"2"reset" \n");
         while (getchar() != '\n');
     }
     getchar();
 
-    if (choice == 1)
-    {
+    if (choice == 1) {
         printf("\t\t\t\tEnter task ID to remove: ");
-        while (scanf("%d", &taskId) != 1)
-        {
-            printf("\t\t\t\tInvalid input! Please enter a number: ");
+        while (scanf("%d", &taskId) != 1) {
+            printf("\t\t\t\t"RED"Invalid input! Please enter a number: "reset);
             while (getchar() != '\n');
         }
         getchar();
@@ -634,46 +653,35 @@ removal_start:
         current = q->front;
         prev = NULL;
 
-        while (current != NULL)
-        {
-            if (current->task.id == taskId)
-            {
+        while (current != NULL) {
+            if (current->task.id == taskId) {
                 found = 1;
                 printf("\n\t\t\t\tFound task to remove:\n");
-                printf("\t\t\t\tID: %d\n", current->task.id);
+                printf("\t\t\t\tID         : %d\n", current->task.id);
                 printf("\t\t\t\tDescription: %s\n", current->task.description);
-                printf("\t\t\t\tPriority: %d\n", current->task.priority);
+                printf("\t\t\t\tPriority   : %d\n", current->task.priority);
 
-                while (1)
-                {
-                    printf("\n\t\t\t\tAre you sure you want to remove this task? (y/n): ");
+                while (1) {
+                    printf("\n\t\t\t\tAre you sure you want to remove this task? ("GRN"y"reset"/"RED"n"reset"): ");
                     scanf(" %c", &confirm);
                     getchar();
                     confirm = tolower(confirm);
 
-                    if (confirm == 'y')
-                    {
-                        if (prev == NULL)
-                        {
+                    if (confirm == 'y') {
+                        if (prev == NULL) {
                             q->front = current->next;
-                        }
-                        else
-                        {
+                        } else {
                             prev->next = current->next;
                         }
                         free(current);
                         q->size--;
                         printf("\n\n\t\t\t\tTask removed successfully.\n");
                         break;
-                    }
-                    else if (confirm == 'n')
-                    {
+                    } else if (confirm == 'n') {
                         printf("\n\t\t\t\tTask removal cancelled.\n");
                         break;
-                    }
-                    else
-                    {
-                        printf("\t\t\t\tInvalid input!\n");
+                    } else {
+                        printf("\t\t\t\t"RED"Invalid input!\n"reset);
                     }
                 }
                 break;
@@ -682,14 +690,11 @@ removal_start:
             current = current->next;
         }
 
-        if (!found)
-        {
-            printf("\t\t\t\tNo task found with ID %d.\n", taskId);
-            do
-            {
-                printf("\n\t\t\t\tDo you want to try again? (y/n): ");
-                if (scanf(" %c", &confirm) != 1)
-                {
+        if (!found) {
+            printf("\n\t\t\t\tNo task found with ID %d.\n", taskId);
+            do {
+                printf("\n\t\n\t\t\t\t"GRN"Do you want to try again? (y/n): "reset);
+                if (scanf(" %c", &confirm) != 1) {
                     while (getchar() != '\n');
                     confirm = ' ';
                 }
@@ -697,26 +702,20 @@ removal_start:
                 confirm = tolower(confirm);
 
                 if (confirm != 'y' && confirm != 'n')
-                    printf("\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
-            }
-            while (confirm != 'y' && confirm != 'n');
+                    printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 'y'"reset" or "BWHT"'n'"reset" \n");
+            } while (confirm != 'y' && confirm != 'n');
 
-            if (confirm == 'y')
-            {
+            if (confirm == 'y') {
                 clearScreen();
                 goto removal_start;
-            }
-            else
-            {
-                printf("\n\t\t\t\tReturning to main menu.\n");
-                printf("\n\t\t\t\tPress Enter to continue...");
+            } else {
+                printf("\n\t\t\t\t\tReturning to main menu.\n");
+                printf("\n\t\t\t\t\t"GRN"Press Enter to continue..."reset);
                 getchar();
                 return;
             }
         }
-    }
-    else
-    {
+    } else {
         printf("\t\t\t\tEnter task name to remove: ");
         fgets(taskDesc, sizeof(taskDesc), stdin);
         taskDesc[strcspn(taskDesc, "\n")] = '\0';
@@ -724,46 +723,35 @@ removal_start:
         current = q->front;
         prev = NULL;
 
-        while (current != NULL)
-        {
-            if (strcmp(current->task.description, taskDesc) == 0)
-            {
+        while (current != NULL) {
+            if (strcmp(current->task.description, taskDesc) == 0) {
                 found = 1;
                 printf("\n\t\t\t\tFound task to remove:\n");
-                printf("\t\t\t\tID: %d\n", current->task.id);
+                printf("\t\t\t\tID         : %d\n", current->task.id);
                 printf("\t\t\t\tDescription: %s\n", current->task.description);
-                printf("\t\t\t\tPriority: %d\n", current->task.priority);
+                printf("\t\t\t\tPriority   : %d\n", current->task.priority);
 
-                while (1)
-                {
-                    printf("\n\t\t\t\tAre you sure you want to remove this task? (y/n): ");
+                while (1) {
+                    printf("\n\t\t\t\tAre you sure you want to remove this task? ("GRN"y"reset"/"RED"n"reset"): ");
                     scanf(" %c", &confirm);
                     getchar();
                     confirm = tolower(confirm);
 
-                    if (confirm == 'y')
-                    {
-                        if (prev == NULL)
-                        {
+                    if (confirm == 'y') {
+                        if (prev == NULL) {
                             q->front = current->next;
-                        }
-                        else
-                        {
+                        } else {
                             prev->next = current->next;
                         }
                         free(current);
                         q->size--;
                         printf("\t\t\t\tTask removed successfully.\n");
                         break;
-                    }
-                    else if (confirm == 'n')
-                    {
+                    } else if (confirm == 'n') {
                         printf("\t\t\t\tTask removal cancelled.\n");
                         break;
-                    }
-                    else
-                    {
-                        printf("\t\t\t\tInvalid input!\n");
+                    } else {
+                        printf("\t\t\t\t"RED"Invalid input!\n"reset);
                     }
                 }
                 break;
@@ -772,46 +760,37 @@ removal_start:
             current = current->next;
         }
 
-        if (!found)
-        {
-            printf("\t\t\t\tNo task found with name '%s'.\n", taskDesc);
-            do
-            {
-                printf("\n\t\t\t\tDo you want to try again? (y/n): ");
-                if (scanf(" %c", &confirm) != 1)
-                {
+        if (!found) {
+            printf("\n\t\t\t\tNo task found with Name %s\n", taskDesc);
+            do {
+                printf("\n\t\n\t\t\t\t"GRN"Do you want to try again? (y/n): "reset);
+                if (scanf(" %c", &confirm) != 1) {
                     while (getchar() != '\n');
                     confirm = ' ';
                 }
                 getchar();
                 confirm = tolower(confirm);
-
                 if (confirm != 'y' && confirm != 'n')
-                    printf("\t\t\t\tInvalid input! Please enter 'y' or 'n'.\n");
-            }
-            while (confirm != 'y' && confirm != 'n');
+                    printf("\n\t\t\t\t"RED"Invalid input!"reset" "GRN"Please enter"reset ""BWHT" 'y'"reset" or "BWHT"'n'"reset" \n");
+            } while (confirm != 'y' && confirm != 'n');
 
-            if (confirm == 'y')
-            {
+            if (confirm == 'y') {
                 clearScreen();
                 goto removal_start;
-            }
-            else
-            {
+            } else {
                 printf("\t\t\t\tReturning to main menu.\n");
-                printf("\n\t\t\t\tPress Enter to continue...");
+                printf("\n\t\t\t\t"GRN"Press Enter to continue..."reset);
                 getchar();
                 return;
             }
         }
     }
 
-    printf("\n\t\t\t\tPress Enter to continue...");
+    printf("\n\t\t\t\t"GRN"Press Enter to continue..."reset);
     getchar();
 }
 
-void simulateScheduler()
-{
+void simulateScheduler() {
     PriorityQueue taskQueue;
     initializeQueue(&taskQueue);
 
@@ -821,200 +800,200 @@ void simulateScheduler()
 
     int choice;
 
-    while (1)
-    {
+    while (1) {
         clearScreen();
-        gotoxy(45,2);
+        gotoxy(45, 2);
         printf("=== Task Scheduling System ===\n");
         showMenu();
-
-        while (scanf("%d", &choice) != 1 || choice < 1 || choice > 6)
-        {
-            printf("\n\t\t\t\tInvalid input! Please enter a number between 1-6: ");
+        gotoxy(62, 18);
+        while (scanf("%d", &choice) != 1 || choice < 1 || choice > 6) {
+            gotoxy(37, 18);
+            printf("\r\t\t\t\t\t"RED"Invalid input! Please enter a number between 1-6: "reset);
             while (getchar() != '\n');
         }
         getchar();
 
-        switch (choice)
-        {
-        case 1:
-        {
-            clearScreen();
-            gotoxy(45,2);
-            printf("    Add New Task \n");
-   gotoxy(20,4);
-    for (int i = 0; i < 33; i++)
-    {
-        printf(""BHCYN"%c"reset"", 205);
-    }
+        switch (choice) {
+            case 1: {
+                clearScreen();
+                gotoxy(45, 2);
+                printf("    Add New Task \n");
+                gotoxy(20, 4);
+                for (int i = 0; i < 33; i++) {
+                    printf(""BHCYN"%c"reset"", 205);
+                }
+                printf(" %c ", 111);
+                for (int i = 0; i < 33; i++)
+                    printf(""BHCYN"%c"reset"", 205);
 
-    printf(" %c ", 111);
-    for (int i = 0; i < 33; i++)
-        printf(""BHCYN"%c"reset"", 205);
-            Task newTask;
-            newTask.processing_time = 0.0;
-            gotoxy(40, 6);
-            printf("Enter task ID: ");
-            while (1)
-            {
-                if (scanf("%d", &newTask.id) == 1)
-                {
-                    if (isIdUnique(&processedTasks, &taskQueue, newTask.id))
-                    {
-                        break;
-                    }
-                    else
-                    {
+                Task newTask;
+                newTask.processing_time = 0.0;
 
-                        printf("\t\t\t\t\tID already exists! Please enter a unique ID: ");
+                gotoxy(40, 6);
+                printf("Enter task ID                    : ");
+                while (1) {
+                    if (scanf("%d", &newTask.id) == 1) {
+                        if (isIdUnique(&processedTasks, &taskQueue, newTask.id)) {
+                            break;
+                        } else {
+                            printf("\t\t\t\t\tID "RED"already exists! Please enter a unique ID: "reset);
+                        }
+                    } else {
+                        printf("\t\t\t\t\t"RED"Invalid ID! Please enter a number: "reset);
+                        while (getchar() != '\n');
                     }
                 }
-                else
-                {
+                getchar();
 
-                    printf("\t\t\t\tInvalid ID! Please enter a number: ");
+                printf("\t\t\t\t\tEnter task description           : ");
+                fgets(newTask.description, sizeof(newTask.description), stdin);
+                newTask.description[strcspn(newTask.description, "\n")] = '\0';
+
+                printf("\t\t\t\t\tEnter priority (1-10, 10=highest): ");
+                while (1) {
+                    if (scanf("%d", &newTask.priority) == 1 && newTask.priority >= 1 && newTask.priority <= 10)
+                        break;
+                    gotoxy(40, 14);
+                    printf(""RED"Invalid priority! Please enter a value between 1-10: "reset);
                     while (getchar() != '\n');
                 }
-            }
-            getchar();
-
-            printf("\t\t\t\t\tEnter task description: ");
-            fgets(newTask.description, sizeof(newTask.description), stdin);
-            newTask.description[strcspn(newTask.description, "\n")] = '\0';
-
-            printf("\t\t\t\t\tEnter priority (1-10, 10=highest): ");
-            while (1)
-            {
-                if (scanf("%d", &newTask.priority) == 1 && newTask.priority >= 1 && newTask.priority <= 10)
-                    break;
-                gotoxy(40,14);
-                printf("Invalid priority! Please enter a value between 1-10: ");
-                while (getchar() != '\n');
-            }
-            getchar();
-
-            newTask.arrival_time = time(NULL);
-            enqueue(&taskQueue, newTask);
-
-            printf("\n\n\n\t\t\t\tTask added successfully! Press Enter to continue...");
-            getchar();
-            break;
-        }
-        case 2:
-        {
-            clearScreen();
-            if (isEmpty(&taskQueue))
-            {
-                gotoxy(45,10);
-                printf("No tasks in queue!\n");
-            }
-            else
-            {
-                gotoxy(45,3);
-                printf("=== Processing Task ===\n");
-                Task currentTask = dequeue(&taskQueue);
-                currentTask.start_time = time(NULL);
-                currentTask.wait_time = difftime(currentTask.start_time, currentTask.arrival_time);
-
-                printf("\n\n\t\t\t\tTask %d: %s (Priority: %d)\n",
-                       currentTask.id, currentTask.description, currentTask.priority);
-
-                printf("\t\t\t\tArrived at: %s", ctime(&currentTask.arrival_time));
-
-                printf("\t\t\t\tStarted at: %s", ctime(&currentTask.start_time));
-
-                printf("\t\t\t\tWaited for: %.2f seconds\n", currentTask.wait_time);
-                ;
-                printf("\n\n\t\t\t\tProcessing task... Press Enter when complete...");
-                time_t start_real = time(NULL);
                 getchar();
-                time_t end_real = time(NULL);
-                currentTask.processing_time = difftime(end_real, start_real);
 
-                currentTask.completion_time = time(NULL);
+                newTask.arrival_time = time(NULL);
+                enqueue(&taskQueue, newTask);
 
-                printf("\n\t\t\t\tTask completed at: %s\n", ctime(&currentTask.completion_time));
-
-                printf("\n\t\t\t\tProcessing time: %.2f seconds\n", currentTask.processing_time);
-
-                addToProcessedList(&processedTasks, currentTask);
-                saveTasksToFile(&processedTasks);
+                printf("\n\n\n\t\t\t\t    "GRN" Task added successfully! Press Enter to continue..."reset);
+                getchar();
+                break;
             }
-            printf("\n\n\n\t\t\t\tPress Enter to continue...");
-            getchar();
-            break;
-        }
-        case 3:
-        {
-            displayQueue(&taskQueue);
-            printf("\n\n\t\t\t\tPress Enter to continue...");
-            getchar();
-            break;
-        }
-        case 4:
-        {
-            generateReport(&processedTasks);
-            printf("\n\n\t\t\t\tPress Enter to continue...");
-            getchar();
-            break;
-        }
-        case 5:
-        {
-            removeTask(&taskQueue);
-            break;
-        }
-        case 6:
-        {
-            system("cls");
-            freeQueue(&taskQueue);
-            freeProcessedList(&processedTasks);
+            case 2: {
+                clearScreen();
+                if (isEmpty(&taskQueue)) {
+                    gotoxy(45, 10);
+                    printf(""BRED"No tasks in queue!\n"reset);
+                } else {
+                    int yPos = 2;
+                    gotoxy(30, yPos++);
+                    printf("%c", 201);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 187);
+                    gotoxy(30, yPos++);
+                    printf("%c"BHCYN"                       PROCESSING TASK                      "reset"%c\n", 186, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c", 204);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 185);
 
-            gotoxy(37, 10);
+                    Task currentTask = dequeue(&taskQueue);
+                    currentTask.start_time = time(NULL);
+                    currentTask.wait_time = difftime(currentTask.start_time, currentTask.arrival_time);
 
-            printf("\t\tFinalizing...    \t");
+                    gotoxy(30, yPos++);
+                    printf("%c Task ID    :   %-43d %c\n", 186, currentTask.id, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Description:   %-44s%c\n", 186, currentTask.description, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Priority   :   %-43d %c\n", 186, currentTask.priority, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Arrival    :   %-43.24s %c\n", 186, ctime(&currentTask.arrival_time), 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Start Time :   %-43.24s %c\n", 186, ctime(&currentTask.start_time), 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Wait Time  :   %-43.2f %c\n", 186, currentTask.wait_time, 186);
 
-            Sleep(500); // Sleep for 1 second (1000 milliseconds)
+                    gotoxy(30, yPos++);
+                    printf("%c", 200);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 188);
 
-            for(int i=0; i<=100; i++)
+                    gotoxy(30, yPos++);
+                    printf(""GRN" Press Enter when complete..."reset);
 
-            {
-                gotoxy(65,10);
+                    time_t start_real = time(NULL);
+                    getchar();
+                    time_t end_real = time(NULL);
+                    currentTask.processing_time = difftime(end_real, start_real);
+                    currentTask.completion_time = time(NULL);
 
-                printf("%d",i);
+                    yPos += 1;
+                    gotoxy(30, yPos++);
+                    printf("%c", 201);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 187);
+                    gotoxy(30, yPos++);
+                    printf("%c"BHCYN"                      TASK COMPLETED                       "reset" %c\n", 186, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c", 204);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 185);
+                    gotoxy(30, yPos++);
+                    printf("%c Completed at:%-45.24s %c\n", 186, ctime(&currentTask.completion_time), 186);
+                    gotoxy(30, yPos++);
+                    printf("%c Processing  :%-45.2f %c\n", 186, currentTask.processing_time, 186);
+                    gotoxy(30, yPos++);
+                    printf("%c", 200);
+                    for (int i = 0; i < 60; i++) printf("%c", 205);
+                    printf("%c\n", 188);
 
-                printf("%%\n");
-
-                Sleep(20);
+                    addToProcessedList(&processedTasks, currentTask);
+                    saveTasksToFile(&processedTasks);
+                }
+                gotoxy(42, 18);
+                printf("\n\n\t\t\t\t\t  "GRN"Press Enter to continue..."reset);
+                getchar();
+                break;
             }
+            case 3: {
+                displayQueue(&taskQueue);
+                printf("\n\n\t\t\t\t\t"GRN"Press Enter to continue..."reset);
+                getchar();
+                break;
+            }
+            case 4: {
+                generateReport(&processedTasks);
+                printf("\n\n\t\t\t\t\t    "GRN"Press Enter to continue..."reset);
+                getchar();
+                break;
+            }
+            case 5: {
+                removeTask(&taskQueue);
+                break;
+            }
+            case 6: {
+                system("cls");
+                freeQueue(&taskQueue);
+                freeProcessedList(&processedTasks);
 
-            Sleep(800);
+                gotoxy(37, 10);
+                printf("\t\tFinalizing...    \t");
+                Sleep(500);
 
-            printf("\n");
+                for (int i = 0; i <= 100; i++) {
+                    gotoxy(65, 10);
+                    printf("%d", i);
+                    printf("%%\n");
+                    Sleep(20);
+                }
 
-            gotoxy(45, 12);
+                Sleep(800);
+                printf("\n");
+                gotoxy(45, 12);
+                printf("TASK COMPLETED SUCCESSFULLY!");
+                Sleep(1500);
+                system("cls");
 
-            printf("TASK COMPLETED SUCCESSFULLY!");
+                char lines[] =
+                    "\n\n\n\t\t\t  TTTTT   H   H   AAA   N   N  K   K     Y   Y   OOO   U   "
+                    "U\n"
+                    "\t\t\t    T     H   H  A   A  NN  N  K  K       Y Y   O   O  U   U\n"
+                    "\t\t\t    T     HHHHH  AAAAA  N N N  KKK         Y    O   O  U   U\n"
+                    "\t\t\t    T     H   H  A   A  N  NN  K  K        Y    O   O  U   U\n"
+                    "\t\t\t    T     H   H  A   A  N   N  K   K       Y     OOO    UUU\n";
 
-            Sleep(1500);
-
-            system("cls");
-
-
-
-            char lines[] =
-                "\n\n\n\t\t\t  TTTTT   H   H   AAA   N   N  K   K     Y   Y   OOO   U   "
-                "U\n"
-                "\t\t\t    T     H   H  A   A  NN  N  K  K       Y Y   O   O  U   U\n"
-                "\t\t\t    T     HHHHH  AAAAA  N N N  KKK         Y    O   O  U   U\n"
-                "\t\t\t    T     H   H  A   A  N  NN  K  K        Y    O   O  U   U\n"
-                "\t\t\t    T     H   H  A   A  N   N  K   K       Y     OOO    UUU\n";
-
-
-            printf("%s\n", lines);
-
-            Sleep(4000);
-            return;
-        }
+                printf(""BHCYN"%s\n"reset"", lines);
+                Sleep(4000);
+                return;
+            }
         }
     }
 }
