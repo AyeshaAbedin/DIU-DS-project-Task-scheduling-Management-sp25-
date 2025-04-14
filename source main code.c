@@ -65,9 +65,10 @@ void loadingBar();
 int main()
 {
     // First show the logo
+
     clearScreen();
     displayLogo();
-    loadingAnimation();
+    password();
 
     simulateScheduler();
     return 0;
@@ -80,6 +81,7 @@ void gotoxy(int x, int y)
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+
 void displayLogo()
 {
     printf("\n\n\n");
@@ -110,23 +112,6 @@ void loadingBar()
         Sleep(80);
     }
     printf("\n");
-}
-
-void showLoadingScreen()
-{
-    clearScreen();
-    printf("\n\nLoading Task Scheduler");
-    fflush(stdout);
-
-    for (int i = 0; i < 3; i++)
-    {
-        sleep(1);
-        printf(".");
-        fflush(stdout);
-    }
-
-    sleep(1);
-    clearScreen();
 }
 
 void clearScreen()
@@ -170,7 +155,7 @@ void showMenu()
     for (int i = 0; i < 60; i++)
         printf("%c", 205);
     printf("%c\n", 188);
-    gotoxy(40, 21);  // Changed from 18 to 21 to account for extra lines
+    gotoxy(40, 21);
 
 
 
@@ -242,7 +227,7 @@ void mainbox()
     gotoxy(45, 6);
     printf("================================");
 }
-void loadingAnimation()
+void password()
 {
     system("cls");
 
@@ -1155,7 +1140,7 @@ case 2:
 
             printf("\t\tFinalizing...    \t");
 
-            Sleep(500); // Sleep for 1 second (1000 milliseconds)
+            Sleep(500);
 
             for(int i=0; i<=100; i++)
 
